@@ -1,13 +1,12 @@
-/*
+
 { ->
 	print("Hello, world!\n");
 	print("Hi!", "\n");
 	println("你好");
 }
-*/
 
 
-/*
+
 {_true, _false, _if ->
     _true = {(t, f) -> t};
     _false = {(t, f) -> f};
@@ -15,9 +14,8 @@
 
     println(_if(_false, {-> while true do {} od}, {-> "False"}))
 }
-*/
 
-/*
+
 {average, sqr, abs, sqrt, x ->
     average = {(x, y) -> (x + y) / 2};
     sqr = {(x) -> x * x};
@@ -33,14 +31,13 @@
         sqrtIter(1)
     };
 
-    x = 2;
+    x = 2.3;
     println("sqrt(", x, "): ", sqrt(x));
 }
-*/
 
 
 
-/*
+
 {coin, change ->
     coin = {(index) ->
         if index == 0
@@ -78,11 +75,9 @@
 
     println(change(10, 0))
 }
-*/
 
 
 
-/*
 {makeCounter, myCounter, yourCounter, n ->
 
     makeCounter = {(balance) ->
@@ -104,21 +99,20 @@
         n += 1
     od
 }
-*/
 
 
-/*
+
+
 {isOdd, isEven ->
 	isOdd = {(n) -> if n == 0 then false else isEven(n - 1) fi};
 	isEven = {(n) -> if n == 0 then true else isOdd(n - 1) fi};
 
 	println(isEven(1000));
 }
-*/
 
 
 
-/*
+
 {a ->
     println(1 / 317);
 
@@ -130,9 +124,9 @@
 
     println(3.27 % .7);
 }
-*/
 
-/*
+
+
 {fib ->
     fib = {(n) ->
         if n < 2 then n else fib(n - 1) + fib(n - 2) fi
@@ -140,9 +134,9 @@
 
     println(fib(40))
 }
-*/
 
-/*
+
+
 {fib ->
     fib = {(n) fib0, fib1, fib ->
         fib0 = 1;
@@ -158,12 +152,7 @@
 
     println(fib(10000))
 }
-*/
 
-
-
-
-/*
 {hanoi ->
     hanoi = {(n, from, to, via) ->
         if n > 0 then
@@ -174,11 +163,11 @@
     };
     hanoi(10, "left", "right", "center")
 }
-*/
 
 
 
-/*
+
+
 { pair, head, tail, tree ->
     pair = {(h, t) -> {(p) -> p(h, t)}};
     head = {(p) -> p({(h, t) -> h})};
@@ -187,6 +176,6 @@
     tree = pair(1, pair(pair("two", 42), pair(true, nil)));
     println(tail(head(tail(tree))));
 }
-*/
+
 
 // a line comment

@@ -1,5 +1,7 @@
 package parser;
 
+import tokenizer.CommentNotClosedException;
+import tokenizer.StringNotClosedException;
 import tokenizer.Token;
 import tokenizer.Tokenizer;
 
@@ -12,11 +14,37 @@ public class Parser {
         this.tokenizer = tokenizer;
     }
 
-    public void compile() throws IOException {
+    public BinaryTree compile() throws IOException, StringNotClosedException, CommentNotClosedException {
         Token t;
         do {
+
             t = tokenizer.nextToken();
-            System.out.println(t.type +"\t\t" + t.value);
         } while (t.type != Token.TYPE.EOS);
+        return new BinaryTree();
+    }
+
+    public void function() throws StringNotClosedException, IOException, CommentNotClosedException {
+        tokenizer.nextToken(); // {
+        optParams();
+        optLocals();
+        optSequence();
+        tokenizer.nextToken(); // }
+    }
+
+    private void optParams() {
+        optIds();
+    }
+
+    private void optLocals() {
+    }
+
+    private void optSequence() {
+    }
+
+    private void optIds() {
+
+    }
+    private void id(){
+
     }
 }

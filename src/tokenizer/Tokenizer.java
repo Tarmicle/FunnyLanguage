@@ -1,10 +1,8 @@
 package tokenizer;
 
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.math.BigDecimal;
 
 public class Tokenizer {
     private BufferedReader bufferedReader;
@@ -13,6 +11,7 @@ public class Tokenizer {
     private static int EOS = -1;
 
     public Tokenizer(String fileName) {
+        hasPrevious = false;
         try {
             bufferedReader =
                     new BufferedReader(new FileReader(fileName));
@@ -20,13 +19,15 @@ public class Tokenizer {
             System.out.println("Unable to open file '" + fileName + "'");
         }
     }
-
+    public Tokenizer(BufferedReader reader){
+        bufferedReader = reader;
+    }
 
     // Skip whitespaces and place the marker on the first 'non spacing' character
     private static int skipWhiteSpaces(BufferedReader bufferedReader) throws IOException {
         bufferedReader.mark(1);
         int i = bufferedReader.read();
-        while (i == ' ' || i == '\n'|| i=='\t') {
+        while (i == ' ' || i == '\n' || i == '\t') {
             bufferedReader.mark(1);
             i = bufferedReader.read();
         }
@@ -40,19 +41,47 @@ public class Tokenizer {
         return new Token(Token.TYPE.EOS, "EOS");
     }
 
-    public Token nextToken() throws IOException {
+    private Token previous;
+    private boolean hasPrevious;
+    private boolean readPrevious;
+
+    public void undoNext() throws TokenizerException {
+        if (hasPrevious) {
+            hasPrevious = false;
+            readPrevious = true;
+        } else throw new TokenizerException();
+    }
+
+    public Token nextToken() throws IOException, CommentNotClosedException, StringNotClosedException {
+        if (readPrevious) {
+            hasPrevious = false;
+            readPrevious = false;
+            return previous;
+        }
+
+        previous = privateNextToken();
+        hasPrevious = true;
+        return previous;
+    }
+
+    public Token privateNextToken() throws IOException, CommentNotClosedException, StringNotClosedException {
         if (eos) return new Token(Token.TYPE.EOS, "EOS");
+
         if (skipWhiteSpaces(bufferedReader) == EOS) {
             return handleEOS();
         }
+        while (isCommentStart(bufferedReader)) {
+            if (isAnInlineComment(bufferedReader))
+                if (skipLine(bufferedReader) == EOS)
+                    return handleEOS();
+            if (isAMultiLineComment(bufferedReader))
+                if (skipCommentArea(bufferedReader) == EOS)
+                    return handleEOS();
 
-        if (isBeginningAComment(bufferedReader)) {
-            if (skipCommentArea(bufferedReader) == EOS)
-                return handleEOS();
+
         }
 
         int nextChar = bufferedReader.read();
-
 
         if (nextChar == '{') return new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{");
         if (nextChar == '}') return new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}");
@@ -75,9 +104,34 @@ public class Tokenizer {
 
     }
 
-    private static boolean isBeginningAComment(BufferedReader bufferedReader) throws IOException {
+    private int skipLine(BufferedReader bufferedReader) throws IOException {
+        bufferedReader.readLine();
+        return skipWhiteSpaces(bufferedReader);
+    }
+
+    private boolean isAnInlineComment(BufferedReader bufferedReader) throws IOException {
         bufferedReader.mark(2);
-        boolean isBeginningAComment = bufferedReader.read() == '/' && bufferedReader.read() == '*';
+        int b1 = bufferedReader.read();
+        int b2 = bufferedReader.read();
+        boolean isBeginningAComment = b1 == '/' && b2 == '/';
+        bufferedReader.reset();
+        return isBeginningAComment;
+    }
+
+    private boolean isAMultiLineComment(BufferedReader bufferedReader) throws IOException {
+        bufferedReader.mark(2);
+        int b1 = bufferedReader.read();
+        int b2 = bufferedReader.read();
+        boolean isBeginningAComment = b1 == '/' && b2 == '*';
+        bufferedReader.reset();
+        return isBeginningAComment;
+    }
+
+    private static boolean isCommentStart(BufferedReader bufferedReader) throws IOException {
+        bufferedReader.mark(2);
+        int b1 = bufferedReader.read();
+        int b2 = bufferedReader.read();
+        boolean isBeginningAComment = (b1 == '/' && b2 == '*') || (b1 == '/' && b2 == '/');
         bufferedReader.reset();
         return isBeginningAComment;
     }
@@ -99,9 +153,23 @@ public class Tokenizer {
         return isClosingAComment;
     }
 
-    private static void skipToNextCommentCandidate(BufferedReader bufferedReader) throws IOException {
-        bufferedReader.mark(1);
+    private static int skipCommentArea(BufferedReader bufferedReader) throws IOException, CommentNotClosedException {
+        int commentState = 0;
+        do {
+            skipToNextCommentTagCandidate(bufferedReader);
+            if (isCommentStart(bufferedReader))
+                commentState = handleOpenComment(bufferedReader, commentState);
+            else if (isColosingAComment(bufferedReader))
+                commentState = handleCloseComment(bufferedReader, commentState);
+            else if (bufferedReader.read() == EOS) {
+                throw new CommentNotClosedException();
+            }
+        } while (commentState != 0);
+        return skipWhiteSpaces(bufferedReader);
+    }
 
+    private static void skipToNextCommentTagCandidate(BufferedReader bufferedReader) throws IOException {
+        bufferedReader.mark(1);
         int char1 = bufferedReader.read();
         while (char1 != '*' && char1 != '/') {
             bufferedReader.mark(1);
@@ -110,20 +178,6 @@ public class Tokenizer {
 
         bufferedReader.reset();
     }
-
-    private static int skipCommentArea(BufferedReader bufferedReader) throws IOException {
-        int commentState = 0;
-        do {
-            skipToNextCommentCandidate(bufferedReader);
-            if (isBeginningAComment(bufferedReader))
-                commentState = handleOpenComment(bufferedReader, commentState);
-            else if (isColosingAComment(bufferedReader))
-                commentState = handleCloseComment(bufferedReader, commentState);
-            else bufferedReader.read();
-        } while (commentState != 0);
-        return skipWhiteSpaces(bufferedReader);
-    }
-
 
     Token handleVar(int next) throws IOException {
         StringBuilder varname = new StringBuilder();
@@ -137,16 +191,17 @@ public class Tokenizer {
         return new Token(Token.TYPE.VARIABLE, varname.toString());
     }
 
-    private Token handleString() throws IOException {
+    private Token handleString() throws IOException, StringNotClosedException {
         StringBuilder stringBuilder = new StringBuilder();
         int next;
         while ((next = bufferedReader.read()) != '"') {
+            if (next == EOS) throw new StringNotClosedException();
             stringBuilder.append((char) next);
         }
         return new Token(Token.TYPE.STRING, stringBuilder.toString());
     }
 
-    private boolean isBeginningAComment() throws IOException {
+    private boolean isCommentStart() throws IOException {
         bufferedReader.mark(1);
         if (bufferedReader.read() == '*')
             return true;
@@ -270,21 +325,51 @@ public class Tokenizer {
     }
 
     private boolean isANumber(int i) {
-        return ('0' <= i && i <= '9');
+        return ('0' <= i && i <= '9' || i == '.');
+    }
+
+    private boolean isExponent(BufferedReader bufferedReader) throws IOException {
+        bufferedReader.mark(1);
+        boolean isExponent = bufferedReader.read() == 'e';
+        bufferedReader.reset();
+        return isExponent;
+    }
+
+    private boolean isMinus(BufferedReader bufferedReader) throws IOException {
+        bufferedReader.mark(1);
+        boolean isMinus = bufferedReader.read() == '-';
+        bufferedReader.reset();
+        return isMinus;
     }
 
 
     private Token handleNumber(int digit) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
-
         do {
-            stringBuilder.append(digit);
+            stringBuilder.append((char) digit);
             bufferedReader.mark(1);
             digit = bufferedReader.read();
         } while (isANumber(digit));
         bufferedReader.reset();
 
-        return new Token(Token.TYPE.NUMBER, stringBuilder.toString());
+        if (isExponent(bufferedReader)) {
+            bufferedReader.skip(1);
+            stringBuilder.append('e');
+            if (isMinus(bufferedReader)) {
+                bufferedReader.skip(1);
+                stringBuilder.append('-');
+            }
+            bufferedReader.mark(1);
+            int nextInt = bufferedReader.read();
+            while (isANumber(nextInt)) {
+                stringBuilder.append((char) nextInt);
+                bufferedReader.mark(1);
+                nextInt = bufferedReader.read();
+            }
+            bufferedReader.reset();
+        }
+
+        return new Token(Token.TYPE.NUMBER, new BigDecimal(stringBuilder.toString()));
     }
 
 

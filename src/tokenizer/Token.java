@@ -1,13 +1,20 @@
 package tokenizer;
 
+import java.math.BigDecimal;
+
 public class Token {
 
     public final TYPE type;
-    public final String value;
-
+     public Object value;
+     public BigDecimal bigDecimal;
     Token(TYPE type, String value) {
         this.type = type;
         this.value = value;
+    }
+
+    Token(TYPE type, BigDecimal value) {
+        this.type = type;
+        this.bigDecimal = value;
     }
 
     public enum TYPE {
