@@ -19,7 +19,8 @@ public class Tokenizer {
             System.out.println("Unable to open file '" + fileName + "'");
         }
     }
-    public Tokenizer(BufferedReader reader){
+
+    public Tokenizer(BufferedReader reader) {
         bufferedReader = reader;
     }
 
@@ -64,7 +65,17 @@ public class Tokenizer {
         return previous;
     }
 
-    public Token privateNextToken() throws IOException, CommentNotClosedException, StringNotClosedException {
+    public Token assertAndNext(String expected) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException {
+        Object o = nextToken().value;
+        if (!expected.equals(o)) throw new InvalidSymbolException(expected, o);
+        return nextToken();
+    }
+
+    public boolean checkNext(String expected) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException {
+        return (expected.equals(nextToken().value));
+    }
+
+    private Token privateNextToken() throws IOException, CommentNotClosedException, StringNotClosedException {
         if (eos) return new Token(Token.TYPE.EOS, "EOS");
 
         if (skipWhiteSpaces(bufferedReader) == EOS) {
