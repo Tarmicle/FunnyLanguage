@@ -8,8 +8,4 @@ public abstract class Val extends Expr {
         throw new InterpreterException();
     }
 
-    @Override
-    void eval() {
-
-    }
 }

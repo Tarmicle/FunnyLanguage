@@ -10,9 +10,10 @@ public class UnaryExpr extends Expr {
     }
 
     @Override
-    void eval() {
-
+    public Val eval(Env env) {
+        return null;
     }
+
     //private final Token.TYPE operator;
     //private final Expr expr;
 }

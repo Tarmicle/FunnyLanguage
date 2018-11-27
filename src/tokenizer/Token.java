@@ -33,7 +33,7 @@ public class Token {
         EQUAL, EQUAL_EQUAL,
         LAMBDA,
         PLUS, PLUS_EQUAL,
-        MINUS, MINUS_EQUAL,
+        MINUS, MINUS_EQUAL,BANG,
         ABSTERISC, ABSTERISC_EQUAL,
         DIVIDE, DIVIDE_EQUAL,
         MINOR, MINOR_EQUAL,

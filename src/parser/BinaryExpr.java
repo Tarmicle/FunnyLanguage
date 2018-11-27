@@ -4,7 +4,7 @@ import tokenizer.Token;
 
 public class BinaryExpr extends Expr {
     @Override
-    void eval() {
+    public Val eval(Env env) {
         // Left-to-right evaluation
         /*
         Val lval = lexexp.eval(env);
@@ -13,7 +13,9 @@ public class BinaryExpr extends Expr {
             case Plus: return lval.plus(rval);
         }
         */
+        return null;
     }
+
     /*private final Token.TYPE oper;
     private final Expr lexexp;
     private final Expr rexexp;*/

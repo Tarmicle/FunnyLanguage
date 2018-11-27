@@ -1,5 +1,5 @@
 package parser;
 
-abstract class Expr {
-    abstract void eval();
+public abstract class Expr {
+    public abstract Val eval(Env env);
 }

@@ -1,17 +1,23 @@
 package parser;
 
 public class Env {
-    /*
-    private final Frame myFrame;
+
+    private final Frame frame;
     private final Env enclosing;
 
-    Env(Frame frame, Env enclosing){
-        this.myFrame = frame;
+    Env(Frame frame, Env enclosing) {
+        if (frame == null) {
+            throw new IllegalArgumentException("Frame can't null");
+        }
+        this.frame = frame;
         this.enclosing = enclosing;
     }
 
-    Val getVal(String id){
-        return frame.contains(id)?frame.getVal(id):enclosing.getVal(id);
+    Val getVal(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Id can't be null");
+        }
+        return frame.contains(id) ? frame.get(id) : enclosing.getVal(id);
     }
-    */
+
 }

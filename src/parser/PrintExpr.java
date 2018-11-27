@@ -3,13 +3,20 @@ package parser;
 import tokenizer.Token;
 
 public class PrintExpr extends Expr {
-    public PrintExpr(Token.TYPE print, Expr expression) {
+    Token.TYPE print;
+    ExprList expression;
 
+    public PrintExpr(Token.TYPE print, ExprList expression) {
+        this.print = print;
+        this.expression = expression;
     }
 
     @Override
-    void eval() {
-
+    public Val eval(Env env) {
+        for (Expr expr : expression.eval(env)) {
+            System.out.println(expr);
+        }
+        return null;
     }
 
 

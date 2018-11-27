@@ -4,6 +4,10 @@ package parser;
 import java.util.List;
 
 public class ClosureVal extends  Val{
+    @Override
+    public Val eval(Env env) {
+        return null;
+    }
     /*private final Env env;
     private final FunExpr funExpr;
 
