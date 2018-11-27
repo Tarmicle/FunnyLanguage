@@ -1,4 +1,4 @@
-package tokenizer;
+package tokenizer.exceptions;
 
 public class TokenizerException extends Throwable {
 }

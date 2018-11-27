@@ -20,6 +20,13 @@ public class Token {
     public String getStringVal(){
         return value;
     }
+    public BigDecimal getBigDecimalVal(){
+        return bigDecimal;
+    }
+
+    public Token.TYPE getType(){
+        return type;
+    }
 
     public enum TYPE {
         IFNOT, IF, THEN, ELSE, FI,

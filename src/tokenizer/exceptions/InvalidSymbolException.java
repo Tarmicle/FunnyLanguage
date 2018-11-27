@@ -1,4 +1,4 @@
-package tokenizer;
+package tokenizer.exceptions;
 
 public class InvalidSymbolException extends Throwable {
     String expected;

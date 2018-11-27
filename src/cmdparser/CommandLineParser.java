@@ -3,6 +3,7 @@ package cmdparser;
 import parser.Parser;
 import tokenizer.Tokenizer;
 
+import java.io.FileNotFoundException;
 import java.util.regex.Pattern;
 
 public class CommandLineParser {
@@ -17,7 +18,7 @@ public class CommandLineParser {
         fileName = a[0];
     }
 
-    public Parser initCompiler() {
+    public Parser initCompiler() throws FileNotFoundException {
         return new Parser(new Tokenizer(fileName));
     }
 }

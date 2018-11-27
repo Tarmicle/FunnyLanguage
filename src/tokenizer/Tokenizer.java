@@ -1,6 +1,11 @@
 package tokenizer;
 
 
+import tokenizer.exceptions.CommentNotClosedException;
+import tokenizer.exceptions.InvalidSymbolException;
+import tokenizer.exceptions.StringNotClosedException;
+import tokenizer.exceptions.TokenizerException;
+
 import java.io.*;
 import java.math.BigDecimal;
 
@@ -9,19 +14,21 @@ public class Tokenizer {
     private boolean eos = false;
     private static Integer MAX_IDENTIFIER_SIZE = 10;
     private static int EOS = -1;
+    private Token previous;
+    private boolean hasPrevious;
+    private boolean readPrevious;
 
-    public Tokenizer(String fileName) {
+    public Tokenizer(String fileName) throws FileNotFoundException {
         hasPrevious = false;
-        try {
-            bufferedReader =
-                    new BufferedReader(new FileReader(fileName));
-        } catch (FileNotFoundException ex) {
-            System.out.println("Unable to open file '" + fileName + "'");
-        }
+        bufferedReader = new BufferedReader(new FileReader(fileName));
     }
 
     public Tokenizer(BufferedReader reader) {
         bufferedReader = reader;
+    }
+
+    public boolean hasPrevious() {
+        return hasPrevious;
     }
 
     // Skip whitespaces and place the marker on the first 'non spacing' character
@@ -42,9 +49,6 @@ public class Tokenizer {
         return new Token(Token.TYPE.EOS, "EOS");
     }
 
-    private Token previous;
-    private boolean hasPrevious;
-    private boolean readPrevious;
 
     public void undoNext() throws TokenizerException {
         if (hasPrevious) {
@@ -55,7 +59,7 @@ public class Tokenizer {
 
     public Token nextToken() throws IOException, CommentNotClosedException, StringNotClosedException {
         if (readPrevious) {
-            hasPrevious = false;
+            hasPrevious = true;
             readPrevious = false;
             return previous;
         }
@@ -107,6 +111,7 @@ public class Tokenizer {
         if (nextChar == '-') return handleMinus();
         if (nextChar == '<') return handleMinor();
         if (nextChar == '>') return handleMajor();
+
         if (isANumber(nextChar)) return handleNumber(nextChar);
         if (identifierLen(nextChar) != 0) return handleIdentifier(identifierLen(nextChar), nextChar);
         if (nextChar == '"') return handleString();

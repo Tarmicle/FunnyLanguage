@@ -1,32 +1,8 @@
-/*
-{ ->
-	print("Hello, world!\n");
-	print("Hi!", "\n");
-	println("你好");
-}
-*/
-
-
-
-{a b ->
-    a = 1024;
+{a b c->
+    b = 0;
+    a = 1023.8;
+    c = 10;
     b = a + 1;
-    println(b);
+    c = b + c + c + 15.2;
+    println(c);
 }
-/*
-
-{_true _false _if ->
-    _true = {(t f) -> t};
-    _false = {(t f) -> f};
-    _if = {(c t e) -> c(t, e)()};
-
-    println(_if(_true, {-> while true do {} od}, {-> "False"}))
-}
-
-{average, sqr, abs, sqrt, x ->
-    average = {(x, y) -> (x + y) / 2};
-    sqr = {(x) -> x * x};
-    abs = {(x) -> if x >= 0 then x else -x fi};
-    sqrt = {(x) tolerance, isGoodEnough, improve, sqrtIter ->
-        tolerance = 1e-30;
-*/
