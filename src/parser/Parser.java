@@ -23,8 +23,8 @@ public class Parser {
     }
 
     public Expr program() throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException, TokenizerException {
-        FunExpr fun = function(null);
-        return fun;
+        FunExpr firstExpression = function(null);
+        return new InvokeExpr(firstExpression, null);
     }
 
     // function ::= "{" optParams optLocals optSequence "}" .
@@ -42,7 +42,7 @@ public class Parser {
         System.out.println();
         System.out.println("#Entering into optSequence");
 
-        return new FunExpr(optSequence(new Scope(temps, scope)));
+        return new FunExpr(params, locals, optSequence(new Scope(temps, scope)));
         //return new FunExpr(params, locals, code);
     }
 
@@ -106,9 +106,8 @@ public class Parser {
             token = tokenizer.nextToken();
             switch (token.type) {
                 case EQUAL:
-                    System.out.println("Assignement");
                     token = tokenizer.nextToken();
-                    return assignement(scope);
+                    return new SetVarExpr(tokenbk.getStringVal(), assignement(scope));
                 default:
                     tokenizer.undoNext();
                     token = tokenbk;
@@ -120,37 +119,44 @@ public class Parser {
 
     // logicalOr ::= logicalAnd ( "||" logicalOr )? .
     private Expr logicalOr(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException, TokenizerException {
-        System.out.println("logicalOr");
-        return logicalAnd(scope);
+
+        Expr expr = logicalAnd(scope);
+        return expr;
     }
 
     // logicalAnd ::= equality ( "&&" logicalAnd )? .
     private Expr logicalAnd(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException, TokenizerException {
-        System.out.println("logicalAnd");
+
         return equality(scope);
     }
 
     // equality ::= comparison ( ( "==" | "!=" ) comparison )? .
     private Expr equality(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException, TokenizerException {
-        System.out.println("equality");
+
         return comparison(scope);
     }
 
     // comparison ::= add ( ( "<" | "<=" | ">" | ">=" ) add )? .
     private Expr comparison(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException, TokenizerException {
-        System.out.println("comparison");
+
         return add(scope);
     }
 
     // add ::= mult ( ( "+" | "-" ) mult )* .
     private Expr add(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException, TokenizerException {
-        System.out.println("add");
-        return mult(scope);
+        Expr expr = mult(scope);
+        switch (token.type) {
+            case PLUS:
+                Token.TYPE type = token.type;
+                token = tokenizer.nextToken();
+                expr = new BinaryExpr(expr, mult(scope), type);
+        }
+        return expr;
     }
 
     // mult ::= unary ( ( "*" | "/" | "%" ) unary )* .
     private Expr mult(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException, TokenizerException {
-        System.out.println("mult");
+
         return unary(scope);
     }
 
@@ -190,9 +196,10 @@ public class Parser {
     }
 
     private Expr getId(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException {
+        //TODO: Controllare se esiste nello scope
         Expr getVarExpr = new GetVarExpr(token.value.toString());
         token = tokenizer.nextToken();
-        return null;
+        return getVarExpr;
     }
 
     private Expr num(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException {

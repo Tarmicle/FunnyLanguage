@@ -12,7 +12,7 @@ public class PrintExpr extends Expr {
     }
 
     @Override
-    public Val eval(Env env) {
+    public Val eval(Env env) throws InterpreterException {
         for (Expr expr : expression.eval(env)) {
             System.out.println(expr);
         }

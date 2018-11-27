@@ -10,7 +10,7 @@ public class ExprList {
         this.exprList = new ArrayList<>();
     }
 
-    public List<Val> eval(Env env) {
+    public List<Val> eval(Env env) throws InterpreterException {
         List<Val> evals = new ArrayList<>();
         for (Expr expr : exprList) {
             evals.add(expr.eval(env));

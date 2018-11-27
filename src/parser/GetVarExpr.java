@@ -9,6 +9,6 @@ public class GetVarExpr extends Expr {
 
     @Override
     public Val eval(Env env) {
-        return null;
+        return env.getVal(variable);
     }
 }

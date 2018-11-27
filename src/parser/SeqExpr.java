@@ -11,7 +11,7 @@ public class SeqExpr extends Expr {
     }
 
     @Override
-    public Val eval(Env env) {
+    public Val eval(Env env) throws InterpreterException {
         Val lastValue = null;
         for (Expr expr : exprList) {
             lastValue = expr.eval(env);

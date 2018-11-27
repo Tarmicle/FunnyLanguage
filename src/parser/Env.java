@@ -20,4 +20,8 @@ public class Env {
         return frame.contains(id) ? frame.get(id) : enclosing.getVal(id);
     }
 
+    public Val add(String id, Val val) {
+        frame.add(id,val);
+        return val;
+    }
 }

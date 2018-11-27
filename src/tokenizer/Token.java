@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public class Token {
 
     public final TYPE type;
-     public Object value;
+     public String value;
      public BigDecimal bigDecimal;
     Token(TYPE type, String value) {
         this.type = type;
@@ -15,6 +15,10 @@ public class Token {
     Token(TYPE type, BigDecimal value) {
         this.type = type;
         this.bigDecimal = value;
+    }
+
+    public String getStringVal(){
+        return value;
     }
 
     public enum TYPE {

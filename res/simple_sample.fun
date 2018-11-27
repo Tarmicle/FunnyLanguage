@@ -8,9 +8,10 @@
 
 
 
-{a ->
+{a b ->
     a = 1024;
-    println(a)
+    b = a + 1;
+    println(b);
 }
 /*
 
