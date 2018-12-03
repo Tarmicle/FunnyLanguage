@@ -1,7 +1,5 @@
 package parser;
 
-import tokenizer.Token;
-
 public class UnaryExpr extends Expr {
     Expr expr;
 

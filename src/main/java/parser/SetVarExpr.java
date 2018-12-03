@@ -1,7 +1,5 @@
 package parser;
 
-import java.util.ArrayList;
-
 public class SetVarExpr extends Expr {
     private String id;
     private Expr assignement;

@@ -2,7 +2,7 @@ package tokenizer;
 
 
 import tokenizer.exceptions.CommentNotClosedException;
-import tokenizer.exceptions.InvalidSymbolException;
+import tokenizer.exceptions.UnaspectedTokenException;
 import tokenizer.exceptions.StringNotClosedException;
 import tokenizer.exceptions.TokenizerException;
 
@@ -69,13 +69,14 @@ public class Tokenizer {
         return previous;
     }
 
-    public Token assertAndNext(String expected) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException {
+    // This method will do 2 next in total
+    public Token assertAndNext(String expected) throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException {
         Object o = nextToken().value;
-        if (!expected.equals(o)) throw new InvalidSymbolException(expected, o);
+        if (!expected.equals(o)) throw new UnaspectedTokenException(expected, o);
         return nextToken();
     }
 
-    public boolean checkNext(String expected) throws StringNotClosedException, IOException, CommentNotClosedException, InvalidSymbolException {
+    public boolean checkNext(String expected) throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException {
         return (expected.equals(nextToken().value));
     }
 

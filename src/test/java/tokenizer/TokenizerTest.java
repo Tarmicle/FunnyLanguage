@@ -2,7 +2,7 @@ package tokenizer;
 
 import org.junit.jupiter.api.Test;
 import tokenizer.exceptions.CommentNotClosedException;
-import tokenizer.exceptions.InvalidSymbolException;
+import tokenizer.exceptions.UnaspectedTokenException;
 import tokenizer.exceptions.StringNotClosedException;
 import tokenizer.exceptions.TokenizerException;
 
@@ -77,7 +77,7 @@ public class TokenizerTest {
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
         assertDoesNotThrow(() -> tokenizer.assertAndNext("_true"));
-        assertThrows(InvalidSymbolException.class, () -> tokenizer.assertAndNext("_true"));
+        assertThrows(UnaspectedTokenException.class, () -> tokenizer.assertAndNext("_true"));
     }
 
 
@@ -89,5 +89,13 @@ public class TokenizerTest {
         assertEquals(Token.TYPE.EOS, next.getType());
         next = tokenizer.nextToken();
         assertEquals(Token.TYPE.EOS, next.getType());
+    }
+
+    @Test
+    void testAssertAndNext() throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException {
+        InputStream is = new ByteArrayInputStream("a b".getBytes(Charset.defaultCharset()));
+        Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
+        Token a = tokenizer.assertAndNext("a");
+        assertEquals("b", a.getStringVal());
     }
 }

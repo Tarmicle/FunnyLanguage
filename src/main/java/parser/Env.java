@@ -21,7 +21,7 @@ public class Env {
     }
 
     public Val add(String id, Val val) {
-        frame.add(id,val);
+        frame.add(id, val);
         return val;
     }
 }

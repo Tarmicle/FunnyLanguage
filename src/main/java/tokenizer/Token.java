@@ -7,12 +7,13 @@ public class Token {
     public final TYPE type;
      public String value;
      public BigDecimal bigDecimal;
-    Token(TYPE type, String value) {
+     // Per ragioni di Test questi tocken devono essere pubblici
+     public Token(TYPE type, String value) {
         this.type = type;
         this.value = value;
     }
 
-    Token(TYPE type, BigDecimal value) {
+    public Token(TYPE type, BigDecimal value) {
         this.type = type;
         this.bigDecimal = value;
     }

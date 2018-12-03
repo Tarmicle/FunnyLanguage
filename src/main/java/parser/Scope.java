@@ -16,6 +16,8 @@ public class Scope {
     }
 
     public Boolean isInScope(String value) {
-        return variables.stream().anyMatch(e -> e.equals(value));
+        if (variables.stream().anyMatch(e -> e.equals(value))) return true;
+        else if (externalScope != null) return externalScope.isInScope(value);
+        else return false;
     }
 }
