@@ -14,7 +14,16 @@ public class PrintExpr extends Expr {
     @Override
     public Val eval(Env env) throws InterpreterException {
         for (Expr expr : expression.eval(env)) {
-            System.out.println(expr);
+            switch (print) {
+                case PRINT:
+                    System.out.print(expr);
+                    break;
+                case PRINTLN:
+                    System.out.println(expr);
+                    break;
+                default:
+                    throw new InterpreterException();
+            }
         }
         return null;
     }

@@ -18,6 +18,10 @@ public class BinaryExpr extends Expr {
         switch (operator) {
             case PLUS:
                 return new NumVal(leftDecimal.add(rightDecimal));
+            case MINUS:
+                return new NumVal(leftDecimal.subtract(rightDecimal));
+            case ABSTERISC:
+                return new NumVal(leftDecimal.multiply(rightDecimal));
         }
 
         return null;

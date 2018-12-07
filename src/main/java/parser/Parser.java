@@ -7,6 +7,7 @@ import tokenizer.exceptions.StringNotClosedException;
 import tokenizer.exceptions.TokenizerException;
 
 import java.io.IOException;
+import java.rmi.UnexpectedException;
 import java.util.ArrayList;
 
 public class Parser {
@@ -20,7 +21,7 @@ public class Parser {
 
     public Expr compile() throws IOException, StringNotClosedException, CommentNotClosedException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
         Expr programm = program();
-        if (tokenizer.nextToken().type != Token.TYPE.EOS) {
+        if (token.type != Token.TYPE.EOS) {
             System.out.println("Compiler error, ");
             System.out.println("TOKEN: " + token.type);
         }
@@ -41,11 +42,6 @@ public class Parser {
         ArrayList<String> temps = new ArrayList<>(params);
 
         temps.addAll(locals);
-
-        // DEBUG ONLY
-        System.out.print("Temps: ");
-        locals.forEach(e -> System.out.print("[" + e + "] "));
-        System.out.println();
 
         return new FunExpr(params, locals, optSequence(new Scope(temps, scope)));
         //return new FunExpr(params, locals, code);
@@ -107,7 +103,6 @@ public class Parser {
         ArrayList<String> ids = new ArrayList<>();
         while (token.type == Token.TYPE.VARIABLE) {
             ids.add((String) token.value);
-            System.out.println("Added local id [" + ids.get(ids.size() - 1) + "]");
             token = tokenizer.nextToken();
         }
         return ids;
@@ -163,19 +158,31 @@ public class Parser {
     // add ::= mult ( ( "+" | "-" ) mult )* .
     private Expr add(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
         Expr expr = mult(scope);
-        switch (token.type) {
+        Token.TYPE type = token.type;
+        switch (type) {
             case PLUS:
-                Token.TYPE type = token.type;
                 token = tokenizer.nextToken();
                 expr = new BinaryExpr(expr, add(scope), type);
+                break;
+            case MINUS:
+                token = tokenizer.nextToken();
+                expr = new BinaryExpr(expr, add(scope), type);
+                break;
         }
         return expr;
     }
 
     // mult ::= unary ( ( "*" | "/" | "%" ) unary )* .
     private Expr mult(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
-
-        return unary(scope);
+        Expr expr = unary(scope);
+        Token.TYPE type = token.type;
+        switch (type) {
+            case ABSTERISC:
+                token = tokenizer.nextToken();
+                expr = new BinaryExpr(expr, mult(scope), type);
+                break;
+        }
+        return expr;
     }
 
     // unary ::= ( "+" | "-" | "!" ) unary
@@ -194,6 +201,7 @@ public class Parser {
 
     }
 
+    // postfix ::= primary args*
     private Expr postfix(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
         Expr primary = primary(scope);
         if (token.getType() == Token.TYPE.ROUND_BRACKET_OPEN) {
@@ -204,20 +212,35 @@ public class Parser {
     }
 
     private Expr primary(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
-
-        if (token.type == Token.TYPE.PRINT || token.type == Token.TYPE.PRINTLN)
-            return print(scope);
-        else if (token.type == Token.TYPE.STRING)
-            return string(scope);
-        else if (token.type == Token.TYPE.NUMBER)
-            return num(scope);
-        else if (token.type == Token.TYPE.VARIABLE)
-            return getId(scope);
-        else if (token.type == Token.TYPE.CURLY_BRACKET_OPEN) {
-            token = tokenizer.nextToken();
-            return function(scope);
+        switch (token.getType()) {
+            case NUMBER:
+                return num(scope);
+            case STRING:
+                return string(scope);
+            case VARIABLE:
+                return getId(scope);
+            case CURLY_BRACKET_OPEN:
+                token = tokenizer.nextToken();
+                return function(scope);
+            case IF:
+                return condition(scope);
+            case PRINT:
+                return print(scope);
+            case PRINTLN:
+                return print(scope);
+            default:
+                throw new UnaspectedTokenException(token.getType().toString(), token.type);
         }
-        throw new UnaspectedTokenException("STRING | NUMBER | VARIABLE", token.type);
+
+    }
+
+    private Expr condition(Scope scope) throws UnexpectedSymbolException, TokenizerException, CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException {
+        if (token.getType() == Token.TYPE.IF || token.getType() == Token.TYPE.IFNOT) {
+            Expr sequence = sequence(scope);
+            if (token.getType() != Token.TYPE.THEN)
+                throw new UnexpectedSymbolException(token.type.toString());
+            return new IfExpr();
+        } else throw new UnexpectedSymbolException("Ciao" + token.type.toString());
     }
 
     private Expr getId(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, UnexpectedSymbolException {
@@ -246,8 +269,9 @@ public class Parser {
     private PrintExpr print(Scope scope) throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
         if (token.type == Token.TYPE.PRINT || token.type == Token.TYPE.PRINTLN) {
             // TODO: TENERE PRINT O PRINTLN
+            Token prevToken = token;
             token = tokenizer.nextToken();
-            return new PrintExpr(Token.TYPE.PRINT, args(scope));
+            return new PrintExpr(prevToken.getType(), args(scope));
         } else throw new UnaspectedTokenException("print or println", token.value);
     }
 
