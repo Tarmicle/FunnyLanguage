@@ -279,6 +279,102 @@ public class MockTokenizer {
                 mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
                 mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
                 break;
+            case IF_CLOSURE:
+                mockTocken = new ArrayList<>();
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.LAMBDA, "->"));
+                mockTocken.add(new Token(Token.TYPE.IF, "if"));
+                mockTocken.add(new Token(Token.TYPE.TRUE, "true"));
+                mockTocken.add(new Token(Token.TYPE.THEN, "then"));
+                mockTocken.add(new Token(Token.TYPE.PRINT, "print"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.STRING, "hello"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
+                mockTocken.add(new Token(Token.TYPE.FI, "fi"));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+                //  End of closure  ---
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
+                mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
+                break;
+            case IF_ELSE_CLOSURE:
+                mockTocken = new ArrayList<>();
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.LAMBDA, "->"));
+                mockTocken.add(new Token(Token.TYPE.IF, "if"));
+                mockTocken.add(new Token(Token.TYPE.FALSE, "false"));
+                mockTocken.add(new Token(Token.TYPE.THEN, "then"));
+                mockTocken.add(new Token(Token.TYPE.PRINT, "print"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.STRING, "hello"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
+                mockTocken.add(new Token(Token.TYPE.ELSE, "else"));
+                mockTocken.add(new Token(Token.TYPE.PRINT, "print"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.STRING, "world"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
+                mockTocken.add(new Token(Token.TYPE.FI, "fi"));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+                //  End of closure  ---
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
+                mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
+                break;
+            case MINOR:
+                mockTocken = new ArrayList<>();
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.LAMBDA, "->"));
+
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.EQUAL, "="));
+                mockTocken.add(new Token(Token.TYPE.NUMBER, new BigDecimal(0)));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+
+                mockTocken.add(new Token(Token.TYPE.PRINT, "print"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.MINOR, "<"));
+                mockTocken.add(new Token(Token.TYPE.NUMBER, new BigDecimal(20)));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+                //  End of closure  ---
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
+                mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
+                break;
+            case TEST_WHILE:
+                mockTocken = new ArrayList<>();
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.LAMBDA, "->"));
+
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.EQUAL, "="));
+                mockTocken.add(new Token(Token.TYPE.NUMBER, new BigDecimal(0)));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+
+                mockTocken.add(new Token(Token.TYPE.WHILE, "while"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.MINOR, "<"));
+                mockTocken.add(new Token(Token.TYPE.NUMBER, new BigDecimal(10)));
+                mockTocken.add(new Token(Token.TYPE.DO, "do"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.EQUAL, "="));
+                mockTocken.add(new Token(Token.TYPE.NUMBER, new BigDecimal(1)));
+                mockTocken.add(new Token(Token.TYPE.PLUS, "+"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+                mockTocken.add(new Token(Token.TYPE.PRINT, "print"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
+                mockTocken.add(new Token(Token.TYPE.OD, "od"));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+
+                //  End of closure  ---
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
+                mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
+                break;
         }
 
     }

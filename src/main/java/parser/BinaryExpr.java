@@ -22,6 +22,10 @@ public class BinaryExpr extends Expr {
                 return new NumVal(leftDecimal.subtract(rightDecimal));
             case ABSTERISC:
                 return new NumVal(leftDecimal.multiply(rightDecimal));
+            case MINOR:
+                if (rightExpr.eval(env).checkNum().getBigDecimal().compareTo(leftExpr.eval(env).checkNum().getBigDecimal()) > 0)
+                    return new BoolVal(Token.TYPE.TRUE);
+                else return new BoolVal(Token.TYPE.FALSE);
         }
 
         return null;

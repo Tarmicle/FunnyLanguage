@@ -66,6 +66,7 @@ public class Tokenizer {
 
         previous = privateNextToken();
         hasPrevious = true;
+        System.out.println(previous.type.toString());
         return previous;
     }
 

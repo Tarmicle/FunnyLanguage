@@ -1,12 +1,19 @@
-{ makeCounter myCounter yourCounter e ->
-  e = 10;
-  makeCounter = {(balance) ->
-    {(amount) ->
-      balance = balance * amount * e}
+{makeCounter myCounter yourCounter n ->
+
+    makeCounter = {(balance) ->
+        {(amount) -> balance = balance + amount}
     };
-  e = 20;
-  myCounter = makeCounter(100);
-  yourCounter = makeCounter(200);
-  println("MyCounter: ", myCounter(2));
-  println("YourCounter: ", yourCounter(3));
+
+    myCounter = makeCounter(100);
+    yourCounter = makeCounter(50);
+
+    println("myCounter: ", myCounter(0));
+    println("yourCounter: ", yourCounter(0));
+
+    n = 0;
+    while n < 10 do
+        println("myCounter[", n, "]: ", myCounter(50));
+        println("yourCounter[", n, "]: ", yourCounter(10));
+        n = n + 1
+    od
 }

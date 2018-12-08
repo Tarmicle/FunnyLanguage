@@ -12,4 +12,8 @@ public abstract class Val extends Expr {
     NumVal checkNum() throws InterpreterException {
         throw new InterpreterException();
     }
+
+    BoolVal checkBool() throws InterpreterException {
+        throw new InterpreterException();
+    }
 }

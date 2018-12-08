@@ -32,7 +32,7 @@ public class Token {
     public enum TYPE {
         IFNOT, IF, THEN, ELSE, FI,
         WHILENOT, WHILE, DO, OD,
-        PRINTLN, PRINT,
+        PRINTLN, PRINT,TRUE,FALSE,
         END_OF_IDENTIFIERS,
 
         EOS, NUMBER,VARIABLE,
@@ -49,7 +49,7 @@ public class Token {
         ABSTERISC, ABSTERISC_EQUAL,
         DIVIDE, DIVIDE_EQUAL,
         MINOR, MINOR_EQUAL,
-        MAJOR, MAJOR_EQUAL
+        MAJOR, MAJOR_EQUAL;
 
     }
 }

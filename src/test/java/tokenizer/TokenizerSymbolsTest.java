@@ -28,6 +28,22 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
+    void testTrue() throws StringNotClosedException, IOException, CommentNotClosedException {
+        InputStream is = new ByteArrayInputStream("true".getBytes(Charset.defaultCharset()));
+        Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
+        Token next = tokenizer.nextToken();
+        assertEquals(Token.TYPE.TRUE, next.getType());
+    }
+
+    @Test
+    void testFalse() throws StringNotClosedException, IOException, CommentNotClosedException {
+        InputStream is = new ByteArrayInputStream("false".getBytes(Charset.defaultCharset()));
+        Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
+        Token next = tokenizer.nextToken();
+        assertEquals(Token.TYPE.FALSE, next.getType());
+    }
+
+    @Test
     void testLambda() throws StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream(" ->".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));

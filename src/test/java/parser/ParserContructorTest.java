@@ -45,13 +45,6 @@ public class ParserContructorTest {
     }
 
     @Test
-    void programmTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException {
-        Tokenizer mockTokenizer = mock(Tokenizer.class);
-        when(mockTokenizer.assertAndNext("{")).thenThrow(new UnaspectedTokenException());
-        assertThrows(UnaspectedTokenException.class, () -> new Parser(mockTokenizer).compile());
-    }
-
-    @Test
     void aEqual10Test() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.A_EQUAL_10);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
@@ -114,6 +107,58 @@ public class ParserContructorTest {
         assertEquals(InvokeExpr.class, expr.getClass());
         expr.eval(null);
         assertEquals("70", outContent.toString());
+    }
+
+    @Test
+    void ifTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+        answers = new MockTokenizer(Code.IF_CLOSURE);
+        when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
+        when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
+        doAnswer(answers.provide_undoNext_Answer()).when(mockTokenizer).undoNext();
+
+        Expr expr = new Parser(mockTokenizer).compile();
+        assertEquals(InvokeExpr.class, expr.getClass());
+        expr.eval(null);
+        assertEquals("hello", outContent.toString());
+    }
+
+    @Test
+    void ifElseTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+        answers = new MockTokenizer(Code.IF_ELSE_CLOSURE);
+        when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
+        when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
+        doAnswer(answers.provide_undoNext_Answer()).when(mockTokenizer).undoNext();
+
+        Expr expr = new Parser(mockTokenizer).compile();
+        assertEquals(InvokeExpr.class, expr.getClass());
+        expr.eval(null);
+        assertEquals("world", outContent.toString());
+    }
+
+    @Test
+    void minorTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+        answers = new MockTokenizer(Code.MINOR);
+        when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
+        when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
+        doAnswer(answers.provide_undoNext_Answer()).when(mockTokenizer).undoNext();
+
+        Expr expr = new Parser(mockTokenizer).compile();
+        assertEquals(InvokeExpr.class, expr.getClass());
+        expr.eval(null);
+        assertEquals("true", outContent.toString());
+    }
+
+    @Test
+    void loopTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+        answers = new MockTokenizer(Code.TEST_WHILE);
+        when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
+        when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
+        doAnswer(answers.provide_undoNext_Answer()).when(mockTokenizer).undoNext();
+
+        Expr expr = new Parser(mockTokenizer).compile();
+        assertEquals(InvokeExpr.class, expr.getClass());
+        expr.eval(null);
+        assertEquals("12345678910", outContent.toString());
     }
 
     @Test
