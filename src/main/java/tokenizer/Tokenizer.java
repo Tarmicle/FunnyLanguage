@@ -57,7 +57,7 @@ public class Tokenizer {
         } else throw new TokenizerException();
     }
 
-    public Token nextToken() throws IOException, CommentNotClosedException, StringNotClosedException {
+    public Token nextToken() throws IOException, TokenizerException {
         if (readPrevious) {
             hasPrevious = true;
             readPrevious = false;
@@ -73,17 +73,17 @@ public class Tokenizer {
     }
 
     // This method will do 2 next in total
-    public Token assertAndNext(String expected) throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException {
+    public Token assertAndNext(String expected) throws IOException, TokenizerException, UnaspectedTokenException {
         Object o = nextToken().value;
         if (!expected.equals(o)) throw new UnaspectedTokenException(expected, o);
         return nextToken();
     }
 
-    public boolean checkNext(String expected) throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException {
+    public boolean checkNext(String expected) throws TokenizerException, IOException {
         return (expected.equals(nextToken().value));
     }
 
-    private Token privateNextToken() throws IOException, CommentNotClosedException, StringNotClosedException {
+    private Token privateNextToken() throws TokenizerException, IOException {
         if (eos) return new Token(Token.TYPE.EOS, "EOS");
 
         if (skipWhiteSpaces(bufferedReader) == EOS) {

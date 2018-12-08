@@ -1,9 +1,8 @@
 package tokenizer;
 
 import org.junit.jupiter.api.Test;
-import tokenizer.exceptions.CommentNotClosedException;
 import tokenizer.exceptions.UnaspectedTokenException;
-import tokenizer.exceptions.StringNotClosedException;
+
 import tokenizer.exceptions.TokenizerException;
 
 import java.io.*;
@@ -15,14 +14,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TokenizerTest {
 
     @Test
-    void testEmptyReader() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testEmptyReader() throws TokenizerException, IOException {
         InputStream is = new ByteArrayInputStream("".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         assertEquals(Token.TYPE.EOS, tokenizer.nextToken().type);
     }
 
     @Test
-    void testNumber() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testNumber() throws TokenizerException, IOException {
         InputStream is = new ByteArrayInputStream("2".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -31,7 +30,7 @@ public class TokenizerTest {
     }
 
     @Test
-    void testVariable() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testVariable() throws TokenizerException, IOException {
         InputStream is = new ByteArrayInputStream("{_true, _false, _if ->".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -41,7 +40,7 @@ public class TokenizerTest {
     }
 
     @Test
-    void checkMultipleUndo() throws StringNotClosedException, IOException, CommentNotClosedException, TokenizerException {
+    void checkMultipleUndo() throws IOException, TokenizerException {
         InputStream is = new ByteArrayInputStream("1 0".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -63,7 +62,7 @@ public class TokenizerTest {
     }
 
     @Test
-    void checkDoubleUndoException() throws StringNotClosedException, IOException, CommentNotClosedException, TokenizerException {
+    void checkDoubleUndoException() throws IOException, TokenizerException {
         InputStream is = new ByteArrayInputStream("1 0".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         tokenizer.nextToken();
@@ -72,7 +71,7 @@ public class TokenizerTest {
     }
 
     @Test
-    void checkAndNext() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void checkAndNext() throws TokenizerException, IOException {
         InputStream is = new ByteArrayInputStream("{_true, _false, _if ->".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -82,7 +81,7 @@ public class TokenizerTest {
 
 
     @Test
-    void checkEndOfStream() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void checkEndOfStream() throws TokenizerException, IOException {
         InputStream is = new ByteArrayInputStream("".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -92,7 +91,7 @@ public class TokenizerTest {
     }
 
     @Test
-    void testAssertAndNext() throws StringNotClosedException, IOException, CommentNotClosedException, UnaspectedTokenException {
+    void testAssertAndNext() throws TokenizerException, IOException, UnaspectedTokenException {
         InputStream is = new ByteArrayInputStream("a b".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token a = tokenizer.assertAndNext("a");

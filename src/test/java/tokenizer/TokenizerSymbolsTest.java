@@ -3,6 +3,7 @@ package tokenizer;
 import org.junit.jupiter.api.Test;
 import tokenizer.exceptions.CommentNotClosedException;
 import tokenizer.exceptions.StringNotClosedException;
+import tokenizer.exceptions.TokenizerException;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -12,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TokenizerSymbolsTest {
     @Test
-    void checkCurlyBracketOpen() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void checkCurlyBracketOpen() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream("{".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -20,7 +21,7 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
-    void checkCurlyBracketClosed() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void checkCurlyBracketClosed() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream("}".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -28,7 +29,7 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
-    void testTrue() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testTrue() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream("true".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -36,7 +37,7 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
-    void testFalse() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testFalse() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream("false".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -44,7 +45,7 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
-    void testLambda() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testLambda() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream(" ->".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -52,7 +53,7 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
-    void testMinusEqual() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testMinusEqual() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream(" -=".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -60,7 +61,7 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
-    void testAsteriskEqual() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testAsteriskEqual() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream(" *=".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -68,7 +69,7 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
-    void divideEqual() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void divideEqual() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream(" /=".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -76,7 +77,7 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
-    void minorEqual() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void minorEqual() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream(" <=".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -84,7 +85,7 @@ public class TokenizerSymbolsTest {
     }
 
     @Test
-    void testScientificNotation() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testScientificNotation() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream("1e-3".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -92,7 +93,7 @@ public class TokenizerSymbolsTest {
         assertEquals(new BigDecimal("1e-3"), next.getBigDecimalVal());
     }
     @Test
-    void testNegativeNumber() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testNegativeNumber() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream("-10".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();
@@ -100,7 +101,7 @@ public class TokenizerSymbolsTest {
         assertEquals(new BigDecimal("-10"), next.getBigDecimalVal());
     }
     @Test
-    void testIdentifier() throws StringNotClosedException, IOException, CommentNotClosedException {
+    void testIdentifier() throws TokenizerException,StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream("print".getBytes(Charset.defaultCharset()));
         Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
         Token next = tokenizer.nextToken();

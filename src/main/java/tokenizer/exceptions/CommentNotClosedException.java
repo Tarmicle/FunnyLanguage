@@ -1,4 +1,4 @@
 package tokenizer.exceptions;
 
-public class CommentNotClosedException extends Exception {
+public class CommentNotClosedException extends TokenizerException {
 }

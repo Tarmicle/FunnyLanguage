@@ -1,4 +1,4 @@
 package tokenizer.exceptions;
 
-public class StringNotClosedException extends Throwable {
+public class StringNotClosedException extends TokenizerException {
 }
