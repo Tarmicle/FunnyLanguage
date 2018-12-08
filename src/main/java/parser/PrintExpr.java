@@ -17,16 +17,7 @@ public class PrintExpr extends Expr {
     public Val eval(Env env) throws InterpreterException {
         ArrayList<Val> toPrintVals = new ArrayList<>(expression.eval(env));
         toPrintVals.forEach(System.out::print);
-        switch (print) {
-            case PRINT:
-                System.out.print("");
-                break;
-            case PRINTLN:
-                System.out.println();
-                break;
-            default:
-                throw new InterpreterException();
-        }
+        if (print == Token.TYPE.PRINTLN) System.out.println();
         return null;
     }
 

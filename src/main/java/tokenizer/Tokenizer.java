@@ -66,7 +66,9 @@ public class Tokenizer {
 
         previous = privateNextToken();
         hasPrevious = true;
-        System.out.println(previous.type.toString());
+
+        // Solo per debug, vedo a che punto del codice è arrivato il tokenizer
+        //System.out.println(previous.type.toString());
         return previous;
     }
 
@@ -287,16 +289,20 @@ public class Tokenizer {
 
     private Token handleMinus() throws IOException {
         bufferedReader.mark(1);
-        switch (bufferedReader.read()) {
-            case '>':
-                return new Token(Token.TYPE.LAMBDA, "->");
-            case '=':
-                return new Token(Token.TYPE.MINUS_EQUAL, "-=");
-            default:
-                bufferedReader.reset();
-                return new Token(Token.TYPE.MINUS, "-");
+        int currentChar = bufferedReader.read();
+        if (currentChar == '>') {
+            return new Token(Token.TYPE.LAMBDA, "->");
+        } else if (currentChar == '=') {
+            return new Token(Token.TYPE.MINUS_EQUAL, "-=");
+        } else if (Character.isDigit(currentChar)) {
+            return handleNumber(currentChar, true);
+        } else {
+            // Faccio reset perchè ho già letto il token successivo
+            bufferedReader.reset();
+            return new Token(Token.TYPE.MINUS, "-");
         }
     }
+
 
     private Token handleAbsterisc() throws IOException {
         bufferedReader.mark(1);
@@ -362,7 +368,13 @@ public class Tokenizer {
 
 
     private Token handleNumber(int digit) throws IOException {
+        return handleNumber(digit, false);
+    }
+
+    private Token handleNumber(int digit, boolean negative) throws IOException {
         StringBuilder stringBuilder = new StringBuilder();
+        if (negative)
+            stringBuilder.append("-");
         do {
             stringBuilder.append((char) digit);
             bufferedReader.mark(1);
@@ -389,6 +401,5 @@ public class Tokenizer {
 
         return new Token(Token.TYPE.NUMBER, new BigDecimal(stringBuilder.toString()));
     }
-
 
 }

@@ -91,7 +91,14 @@ public class TokenizerSymbolsTest {
         assertEquals(Token.TYPE.NUMBER, next.getType());
         assertEquals(new BigDecimal("1e-3"), next.getBigDecimalVal());
     }
-
+    @Test
+    void testNegativeNumber() throws StringNotClosedException, IOException, CommentNotClosedException {
+        InputStream is = new ByteArrayInputStream("-10".getBytes(Charset.defaultCharset()));
+        Tokenizer tokenizer = new Tokenizer(new BufferedReader(new InputStreamReader(is)));
+        Token next = tokenizer.nextToken();
+        assertEquals(Token.TYPE.NUMBER, next.getType());
+        assertEquals(new BigDecimal("-10"), next.getBigDecimalVal());
+    }
     @Test
     void testIdentifier() throws StringNotClosedException, IOException, CommentNotClosedException {
         InputStream is = new ByteArrayInputStream("print".getBytes(Charset.defaultCharset()));
