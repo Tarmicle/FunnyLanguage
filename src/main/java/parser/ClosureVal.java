@@ -25,7 +25,6 @@ public class ClosureVal extends Val {
 
     // Applico la Closure (ovvero faccio eseguire la funzione)
     Val apply(List<Val> argVals) throws InterpreterException {
-        //TODO: sto barando TANTISSIMO sui parms(1o argomento) e argsval (3o argomento)!
         Frame newFrame;
         if (argVals == null) newFrame = new Frame(funExpr.params(), funExpr.locals(), new ArrayList<>());
         else newFrame = new Frame(funExpr.params(), funExpr.locals(), argVals);

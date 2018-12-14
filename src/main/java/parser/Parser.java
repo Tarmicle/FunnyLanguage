@@ -96,8 +96,15 @@ public class Parser {
         return seqExpr;
     }
 
-    // sequence ::= optAssignment ( ";" optAssignment )* .
+    // optAssignment := assignment?
     private Expr optAssignement(Scope scope) throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
+        //TODO: Opt assignement può cominciare con una parentesi aperta
+        // IO ho accesso ad un assignement
+        // Id plus minus not num false true nil string openbrace openparent if ifnot while whilenot print println
+
+        if (token.getType()== Token.TYPE.CURLY_BRACKET_CLOSE){
+            return null;
+        }
         return assignement(scope);
     }
 
@@ -160,6 +167,18 @@ public class Parser {
                 token = tokenizer.nextToken();
                 expr = new BinaryExpr(expr, add(scope), type);
                 break;
+            case MAJOR:
+                token = tokenizer.nextToken();
+                expr = new BinaryExpr(expr, add(scope), type);
+                break;
+            case MAJOR_EQUAL:
+                token = tokenizer.nextToken();
+                expr = new BinaryExpr(expr, add(scope), type);
+                break;
+            case EQUAL_EQUAL:
+                token = tokenizer.nextToken();
+                expr = new BinaryExpr(expr, add(scope), type);
+                break;
         }
         return expr;
     }
@@ -186,7 +205,7 @@ public class Parser {
         Expr expr = unary(scope);
         Token bkToken = token;
 
-        while (bkToken.getType() == Token.TYPE.ABSTERISC) {
+        while (bkToken.getType() == Token.TYPE.ABSTERISC || bkToken.getType() == Token.TYPE.DIVIDE) {
             token = tokenizer.nextToken();
             expr = new BinaryExpr(expr, unary(scope), bkToken.getType());
             bkToken = token;
@@ -200,8 +219,9 @@ public class Parser {
         switch (token.type) {
             case PLUS:
                 return unary(scope);
-            case MINOR:
-                return unary(scope);
+            case MINUS:
+                token = tokenizer.nextToken();
+                return new UnaryExpr(unary(scope), Token.TYPE.MINUS);
             case BANG:
                 return unary(scope);
             default:
@@ -213,9 +233,13 @@ public class Parser {
     // postfix ::= primary args*
     private Expr postfix(Scope scope) throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
         Expr primary = primary(scope);
+        // È Una chiamata a funzione
         if (token.getType() == Token.TYPE.ROUND_BRACKET_OPEN) {
-            ExprList args = args(scope);
-            return new InvokeExpr(primary, args);
+            // TODO: Usare do while
+            while (token.getType() == Token.TYPE.ROUND_BRACKET_OPEN) {
+                ExprList args = args(scope);
+                primary = new InvokeExpr(primary, args);
+            }
         }
         return primary;
     }
@@ -234,6 +258,8 @@ public class Parser {
                 return getId(scope);
             case CURLY_BRACKET_OPEN:
                 return function(scope);
+            case ROUND_BRACKET_OPEN:
+                return subsequence(scope);
             case IF:
                 return cond(scope);
             case WHILE:
@@ -246,6 +272,13 @@ public class Parser {
                 throw new UnaspectedTokenException("PRIMARY", token.getType().toString());
         }
 
+    }
+
+    private Expr subsequence(Scope scope) throws IOException, TokenizerException, UnaspectedTokenException, UnexpectedSymbolException {
+        assertAndUpdateToken(Token.TYPE.ROUND_BRACKET_OPEN, token.getType());
+        Expr rtn = sequence(scope);
+        assertAndUpdateToken(Token.TYPE.ROUND_BRACKET_CLOSE, token.getType());
+        return rtn;
     }
 
     private Expr cond(Scope scope) throws UnexpectedSymbolException, TokenizerException, UnaspectedTokenException, IOException {
@@ -331,13 +364,14 @@ public class Parser {
         assertAndUpdateToken(Token.TYPE.ROUND_BRACKET_OPEN, token.getType());
 
         ExprList expressions = new ExprList();
-        expressions.add(sequence(scope));
-        // SE non vi è una virgola o un'altra espressione...
-        while (token.getType() == Token.TYPE.COMMA) {
-            token = tokenizer.nextToken();
+        if (token.getType() != Token.TYPE.ROUND_BRACKET_CLOSE) {
             expressions.add(sequence(scope));
+            // SE non vi è una virgola o un'altra espressione...
+            while (token.getType() == Token.TYPE.COMMA) {
+                token = tokenizer.nextToken();
+                expressions.add(sequence(scope));
+            }
         }
-
         // Consumo la parentesi
         assertAndUpdateToken(Token.TYPE.ROUND_BRACKET_CLOSE, token.getType());
 

@@ -64,12 +64,45 @@ public class MockTokenizer {
                 mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
                 mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
 
-                //  print(fn(2));   ---
                 mockTocken.add(new Token(Token.TYPE.PRINT, "print"));
                 mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
                 mockTocken.add(new Token(Token.TYPE.VARIABLE, "fn"));
                 mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
                 mockTocken.add(new Token(Token.TYPE.NUMBER, new BigDecimal(2)));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
+                mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
+                break;
+            case SIMPLE_ADD_STRING_CLOSURE:
+                mockTocken = new ArrayList<>();
+                // {fn->fn={(a)->a=a+1}; print(fn(2));}
+
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "fn"));
+                mockTocken.add(new Token(Token.TYPE.LAMBDA, "->"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "fn"));
+                mockTocken.add(new Token(Token.TYPE.EQUAL, "="));
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
+                mockTocken.add(new Token(Token.TYPE.LAMBDA, "->"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.EQUAL, "="));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.PLUS, "+"));
+                mockTocken.add(new Token(Token.TYPE.STRING, "mondo"));
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+                //  print(fn(2));   ---
+                mockTocken.add(new Token(Token.TYPE.PRINT, "print"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "fn"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.STRING, "Ciao..."));
                 mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
                 mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
                 mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
@@ -372,6 +405,22 @@ public class MockTokenizer {
                 mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
 
                 //  End of closure  ---
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
+                mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
+                break;
+            case TEST_EMPTY_LAMBDA:
+                // {-> println({->} + "a")}
+                mockTocken = new ArrayList<>();
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{"));
+                mockTocken.add(new Token(Token.TYPE.LAMBDA, "->"));
+                mockTocken.add(new Token(Token.TYPE.PRINT, "print"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{"));
+                mockTocken.add(new Token(Token.TYPE.LAMBDA, "->"));
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
+                mockTocken.add(new Token(Token.TYPE.PLUS, "+"));
+                mockTocken.add(new Token(Token.TYPE.STRING, "a"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
                 mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
                 mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
                 break;

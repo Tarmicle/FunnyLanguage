@@ -69,6 +69,19 @@ public class ParserContructorTest {
         expr.eval(null);
         assertEquals("3", outContent.toString());
     }
+    @Test
+    void addStringTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+        answers = new MockTokenizer(Code.SIMPLE_ADD_STRING_CLOSURE);
+        when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
+        when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
+        doAnswer(answers.provide_undoNext_Answer()).when(mockTokenizer).undoNext();
+
+        Expr expr = new Parser(mockTokenizer).compile();
+        assertEquals(InvokeExpr.class, expr.getClass());
+        expr.eval(null);
+        assertEquals("Ciao...mondo", outContent.toString());
+    }
+
 
     @Test
     void simpleSubtractTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
@@ -189,6 +202,23 @@ public class ParserContructorTest {
         assertEquals("200600", outContent.toString());
 
     }
+
+    @Test
+    void emptyLambdaTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+
+        answers = new MockTokenizer(Code.TEST_EMPTY_LAMBDA);
+        when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
+        when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
+        doAnswer(answers.provide_undoNext_Answer()).when(mockTokenizer).undoNext();
+
+
+        Expr expr = new Parser(mockTokenizer).compile();
+        assertEquals(InvokeExpr.class, expr.getClass());
+        expr.eval(null);
+        assertEquals("a", outContent.toString());
+
+    }
+
 
   /*  @Test
     void testArgs() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException {

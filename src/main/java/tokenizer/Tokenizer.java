@@ -8,6 +8,8 @@ import tokenizer.exceptions.TokenizerException;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Tokenizer {
     private BufferedReader bufferedReader;
@@ -66,9 +68,8 @@ public class Tokenizer {
 
         previous = privateNextToken();
         hasPrevious = true;
-
+        System.out.println( previous.getStringVal()+ "\t" +previous.getType().toString() );
         // Solo per debug, vedo a che punto del codice è arrivato il tokenizer
-        //System.out.println(previous.type.toString());
         return previous;
     }
 
@@ -245,7 +246,7 @@ public class Tokenizer {
         return new Token(Token.TYPE.valueOf(token), token);
     }
 
-    private int identifierLen(int firstChar) throws IOException {
+    private int identifierLen1(int firstChar) throws IOException {
         bufferedReader.mark(MAX_IDENTIFIER_SIZE);
         char[] c = new char[MAX_IDENTIFIER_SIZE];
         c[0] = (char) firstChar;
@@ -263,6 +264,40 @@ public class Tokenizer {
             }
         }
         return 0;
+    }
+
+    private int identifierLen(int firstChar) throws IOException {
+        if (!isIdentifierChar(firstChar)) return 0;
+
+        StringBuilder identifier = new StringBuilder();
+        int nextChar = firstChar;
+        while (isIdentifierChar(nextChar)) {
+            identifier.append((char) nextChar);
+            // Leggo il prossimo carattere
+            bufferedReader.mark(identifier.length());
+            bufferedReader.skip(identifier.length() - 1);
+            nextChar = bufferedReader.read();
+            bufferedReader.reset();
+        }
+        bufferedReader.reset();
+        for (Token.TYPE t : Token.TYPE.values()) {
+            if (t.name().equals("END_OF_IDENTIFIERS")) {
+                bufferedReader.reset();
+                return 0;
+            }
+            if (identifier.toString().equals(t.name().toLowerCase())) {
+                bufferedReader.reset();
+                return t.name().length();
+            }
+        }
+        return 0;
+
+    }
+
+    private boolean isIdentifierChar(int toCheckChar) {
+        if (toCheckChar == '_' || Character.isLetter(toCheckChar))
+            return true;
+        else return false;
     }
 
     private Token handleEqual() throws IOException {

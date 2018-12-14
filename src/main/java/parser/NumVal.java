@@ -14,11 +14,21 @@ public class NumVal extends Val {
         return val.toString();
     }
 
+    @Override
+    Val sum(Val augend) throws InterpreterException {
+        try {
+            return new NumVal(augend.checkNum().getBigDecimal().add(this.val));
+        } catch (InterpreterException e) {
+            throw new InterpreterException("Cannot sum to a number something different to another number");
+        }
+    }
+
     NumVal times(Val arg) {
         //return new NumVal(num.multiply(arg.checkNum().num))
         return null;
     }
 
+    @Override
     NumVal checkNum() throws InterpreterException {
         return this;
     }

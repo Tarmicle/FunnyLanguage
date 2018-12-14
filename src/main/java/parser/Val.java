@@ -10,10 +10,14 @@ public abstract class Val extends Expr {
     }
 
     NumVal checkNum() throws InterpreterException {
-        throw new InterpreterException();
+        throw new InterpreterException("Not a number");
     }
 
     BoolVal checkBool() throws InterpreterException {
         throw new InterpreterException();
+    }
+
+    Val sum(Val augend) throws InterpreterException {
+        throw new InterpreterException("Sum operation not supported");
     }
 }
