@@ -12,6 +12,6 @@ public class SetVarExpr extends Expr {
     @Override
     public Val eval(Env env) throws InterpreterException {
         Val evalResult = assignement.eval(env);
-        return env.add(id, evalResult);
+        return env.assign(id, evalResult);
     }
 }

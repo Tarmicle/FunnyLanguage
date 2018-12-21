@@ -30,7 +30,7 @@ public class ParserContructorTest {
     private final PrintStream originalErr = System.err;
 
     @BeforeEach
-    void init() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException {
+    void init() {
         // Setup streams
         System.setOut(new PrintStream(outContent));
         System.setErr(new PrintStream(errContent));
@@ -45,7 +45,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void aEqual10Test() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void aEqual10Test() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.A_EQUAL_10);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -58,7 +58,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void closureTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void closureTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.SIMPLE_ADD_CLOSURE);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -70,7 +70,7 @@ public class ParserContructorTest {
         assertEquals("3", outContent.toString());
     }
     @Test
-    void addStringTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void addStringTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.SIMPLE_ADD_STRING_CLOSURE);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -84,7 +84,7 @@ public class ParserContructorTest {
 
 
     @Test
-    void simpleSubtractTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void simpleSubtractTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.SIMPLE_SUBTRACT_CLOSURE);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -97,7 +97,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void simpleMultiplicationTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void simpleMultiplicationTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.SIMPLE_MULTIPLICATION_CLOSURE);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -110,7 +110,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void consecutiveMultiplicationTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void consecutiveMultiplicationTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.CONSEC_MULTIPLICATION_CLOSURE);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -123,7 +123,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void ifTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void ifTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.IF_CLOSURE);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -136,7 +136,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void ifElseTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void ifElseTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.IF_ELSE_CLOSURE);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -149,7 +149,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void minorTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void minorTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.MINOR);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -162,7 +162,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void loopTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void loopTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
         answers = new MockTokenizer(Code.TEST_WHILE);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
         when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
@@ -175,7 +175,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void counterMaker() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void counterMaker() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
 
         answers = new MockTokenizer(Code.COUNTER_MAKER_CLOUSURE);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
@@ -204,7 +204,7 @@ public class ParserContructorTest {
     }
 
     @Test
-    void emptyLambdaTest() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
+    void emptyLambdaTest() throws UnaspectedTokenException, IOException, TokenizerException, UnexpectedSymbolException, InterpreterException {
 
         answers = new MockTokenizer(Code.TEST_EMPTY_LAMBDA);
         when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());

@@ -158,7 +158,7 @@ public class Parser {
         return comparison(scope);
     }
 
-    // comparison ::= add ( ( "<" | "<=" | ">" | ">=" ) add )? .
+    // comparison ::= assign ( ( "<" | "<=" | ">" | ">=" ) assign )? .
     private Expr comparison(Scope scope) throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
         Expr expr = add(scope);
         Token.TYPE type = token.type;
@@ -183,7 +183,7 @@ public class Parser {
         return expr;
     }
 
-    // add ::= mult ( ( "+" | "-" ) mult )* .
+    // assign ::= mult ( ( "+" | "-" ) mult )* .
     private Expr add(Scope scope) throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
         Expr expr = mult(scope);
         Token.TYPE type = token.type;

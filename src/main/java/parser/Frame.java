@@ -26,11 +26,12 @@ public class Frame {
         }
     }
 
-    public void add(String id, Val val) {
+    public Val assign(String id, Val val) {
         if (id == null || val == null) {
-            throw new IllegalArgumentException("Frame add, id and val should not be null");
+            throw new IllegalArgumentException("Frame assign, id and val should not be null");
         }
         map.put(id, val);
+        return val;
     }
 
     public Val get(String id) {
