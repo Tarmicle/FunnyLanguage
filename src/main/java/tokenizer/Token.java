@@ -5,10 +5,11 @@ import java.math.BigDecimal;
 public class Token {
 
     public final TYPE type;
-     public String value;
-     public BigDecimal bigDecimal;
-     // Per ragioni di Test questi tocken devono essere pubblici
-     public Token(TYPE type, String value) {
+    public String value;
+    public BigDecimal bigDecimal;
+
+    // Per ragioni di Test questi tocken devono essere pubblici
+    public Token(TYPE type, String value) {
         this.type = type;
         this.value = value;
     }
@@ -18,24 +19,25 @@ public class Token {
         this.bigDecimal = value;
     }
 
-    public String getStringVal(){
+    public String getStringVal() {
         return value;
     }
-    public BigDecimal getBigDecimalVal(){
+
+    public BigDecimal getBigDecimalVal() {
         return bigDecimal;
     }
 
-    public Token.TYPE getType(){
+    public Token.TYPE getType() {
         return type;
     }
 
     public enum TYPE {
         IFNOT, IF, THEN, ELSE, FI,
         WHILENOT, WHILE, DO, OD,
-        PRINTLN, PRINT,TRUE,FALSE,
+        PRINTLN, PRINT, TRUE, FALSE,
         END_OF_IDENTIFIERS,
 
-        EOS, NUMBER,VARIABLE,
+        EOS, NUMBER, VARIABLE,
         CURLY_BRACKET_OPEN,
         UNKNOWN, STRING,
         COMMA, SEMICOLON,
@@ -43,9 +45,9 @@ public class Token {
         ROUND_BRACKET_CLOSE,
         ROUND_BRACKET_OPEN,
         EQUAL, EQUAL_EQUAL,
-        LAMBDA,
+        LAMBDA, PERCENT,
         PLUS, PLUS_EQUAL,
-        MINUS, MINUS_EQUAL,BANG,
+        MINUS, MINUS_EQUAL, BANG,
         ABSTERISC, ABSTERISC_EQUAL,
         DIVIDE, DIVIDE_EQUAL,
         MINOR, MINOR_EQUAL,

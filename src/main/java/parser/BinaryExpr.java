@@ -10,6 +10,7 @@ public class BinaryExpr extends Expr {
     private Expr leftExpr;
     private Expr rightExpr;
     private Token.TYPE operator;
+    private int SCALE = 100;
 
     @Override
     public Val eval(Env env) throws InterpreterException {
@@ -29,6 +30,16 @@ public class BinaryExpr extends Expr {
                 leftDecimal = leftExpr.eval(env).checkNum().getBigDecimal();
                 rightDecimal = rightExpr.eval(env).checkNum().getBigDecimal();
                 return new NumVal(leftDecimal.multiply(rightDecimal));
+            case PERCENT:
+                leftDecimal = leftExpr.eval(env).checkNum().getBigDecimal();
+                rightDecimal = rightExpr.eval(env).checkNum().getBigDecimal();
+                try {
+                    BigDecimal divisionResult = new BigDecimal(leftDecimal.divide(rightDecimal).intValue());
+                    return new NumVal(leftDecimal.subtract(divisionResult.multiply(rightDecimal)));
+                } catch (ArithmeticException e) {
+                    BigDecimal divisionResult = new BigDecimal(leftDecimal.divide(rightDecimal,SCALE, RoundingMode.HALF_DOWN).intValue());
+                    return new NumVal(leftDecimal.subtract(divisionResult.multiply(rightDecimal)));
+                }
             case DIVIDE:
                 leftDecimal = leftExpr.eval(env).checkNum().getBigDecimal();
                 rightDecimal = rightExpr.eval(env).checkNum().getBigDecimal();

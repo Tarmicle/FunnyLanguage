@@ -424,6 +424,28 @@ public class MockTokenizer {
                 mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
                 mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
                 break;
+            case TEST_MODULE:
+                // { a ->  a = 3.27 % 0.7; println(3.27 % 0.7);}
+                mockTocken = new ArrayList<>();
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_OPEN, "{"));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.LAMBDA, "->"));
+
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.EQUAL, "="));
+                mockTocken.add(new Token(Token.TYPE.NUMBER, new BigDecimal("3.27")));
+                mockTocken.add(new Token(Token.TYPE.PERCENT, "%"));
+                mockTocken.add(new Token(Token.TYPE.NUMBER, new BigDecimal("0.7")));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+
+                mockTocken.add(new Token(Token.TYPE.PRINT, "print"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_OPEN, "("));
+                mockTocken.add(new Token(Token.TYPE.VARIABLE, "a"));
+                mockTocken.add(new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")"));
+                mockTocken.add(new Token(Token.TYPE.SEMICOLON, ";"));
+                mockTocken.add(new Token(Token.TYPE.CURLY_BRACKET_CLOSE, "}"));
+                mockTocken.add(new Token(Token.TYPE.EOS, "eos"));
+                break;
         }
 
     }

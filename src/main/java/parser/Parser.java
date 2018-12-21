@@ -205,7 +205,7 @@ public class Parser {
         Expr expr = unary(scope);
         Token bkToken = token;
 
-        while (bkToken.getType() == Token.TYPE.ABSTERISC || bkToken.getType() == Token.TYPE.DIVIDE) {
+        while (bkToken.getType() == Token.TYPE.ABSTERISC || bkToken.getType() == Token.TYPE.DIVIDE|| bkToken.getType() == Token.TYPE.PERCENT) {
             token = tokenizer.nextToken();
             expr = new BinaryExpr(expr, unary(scope), bkToken.getType());
             bkToken = token;

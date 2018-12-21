@@ -109,6 +109,7 @@ public class Tokenizer {
         if (nextChar == ')') return new Token(Token.TYPE.ROUND_BRACKET_CLOSE, ")");
         if (nextChar == ',') return new Token(Token.TYPE.COMMA, ",");
         if (nextChar == ';') return new Token(Token.TYPE.SEMICOLON, ";");
+        if (nextChar == '%') return new Token(Token.TYPE.PERCENT, "%");
         if (nextChar == '=') return handleEqual();
         if (nextChar == '*') return handleAbsterisc();
         if (nextChar == '/') return handleDivide();

@@ -218,7 +218,19 @@ public class ParserContructorTest {
         assertEquals("a", outContent.toString());
 
     }
+    @Test
+    void moduleTest() throws TokenizerException, IOException, UnaspectedTokenException, UnexpectedSymbolException, InterpreterException {
+        answers = new MockTokenizer(Code.TEST_MODULE);
+        when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
+        when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
+        doAnswer(answers.provide_undoNext_Answer()).when(mockTokenizer).undoNext();
 
+
+        Expr expr = new Parser(mockTokenizer).compile();
+        assertEquals(InvokeExpr.class, expr.getClass());
+        expr.eval(null);
+        assertEquals("0.47", outContent.toString());
+    }
 
   /*  @Test
     void testArgs() throws CommentNotClosedException, StringNotClosedException, UnaspectedTokenException, IOException {
