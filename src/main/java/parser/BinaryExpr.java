@@ -50,6 +50,13 @@ public class BinaryExpr extends Expr {
                 } catch (ArithmeticException e) {
                     return new NumVal(leftDecimal.divide(rightDecimal, 100, RoundingMode.HALF_DOWN));
                 }
+            case MINOR_EQUAL:
+                leftDecimal = leftExpr.eval(env).checkNum().getBigDecimal();
+                rightDecimal = rightExpr.eval(env).checkNum().getBigDecimal();
+                // >= Ritorna -1 se il rightExpr È più piccolo di left Expr
+                if (isLeftEqualMinor(leftDecimal, rightDecimal))
+                    return new BoolVal(Token.TYPE.TRUE);
+                else return new BoolVal(Token.TYPE.FALSE);
             case MINOR:
                 if (rightExpr.eval(env).checkNum().getBigDecimal().compareTo(leftExpr.eval(env).checkNum().getBigDecimal()) > 0)
                     return new BoolVal(Token.TYPE.TRUE);
@@ -78,6 +85,10 @@ public class BinaryExpr extends Expr {
         }
 
         return null;
+    }
+
+    private boolean isLeftEqualMinor(BigDecimal leftDecimal, BigDecimal rightDecimal) {
+            return leftDecimal.compareTo(rightDecimal) <= 0;
     }
 
     public BinaryExpr(Expr leftExpr, Expr rightExpr, Token.TYPE operator) {

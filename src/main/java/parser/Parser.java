@@ -149,6 +149,11 @@ public class Parser {
                     if (!scope.isInScope(tokenbk.getStringVal()))
                         throw new UnexpectedSymbolException("Unexpected symbol " + token.getStringVal());
                     return new SetVarExpr(tokenbk.getStringVal(), assignement(scope), Token.TYPE.PLUS);
+                case MINUS_EQUAL:
+                    token = tokenizer.nextToken();
+                    if (!scope.isInScope(tokenbk.getStringVal()))
+                        throw new UnexpectedSymbolException("Unexpected symbol " + token.getStringVal());
+                    return new SetVarExpr(tokenbk.getStringVal(), assignement(scope), Token.TYPE.MINUS);
                 default:
                     tokenizer.undoNext();
                     token = tokenbk;
@@ -205,6 +210,10 @@ public class Parser {
                 expr = new BinaryExpr(expr, add(scope), type);
                 break;
             case MAJOR_EQUAL:
+                token = tokenizer.nextToken();
+                expr = new BinaryExpr(expr, add(scope), type);
+                break;
+            case MINOR_EQUAL:
                 token = tokenizer.nextToken();
                 expr = new BinaryExpr(expr, add(scope), type);
                 break;

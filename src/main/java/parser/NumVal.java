@@ -22,6 +22,13 @@ public class NumVal extends Val {
             throw new InterpreterException("Cannot sum to a number something different to another number");
         }
     }
+    Val subtract(NumVal subtrahend) throws InterpreterException {
+        try {
+            return new NumVal(subtrahend.checkNum().getBigDecimal().subtract(this.val));
+        } catch (InterpreterException e) {
+            throw new InterpreterException("Cannot sum to a number something different to another number");
+        }
+    }
 
     @Override
     boolean isNan(){

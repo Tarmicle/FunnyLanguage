@@ -22,6 +22,18 @@ public class SetVarExpr extends Expr {
             Val evalResult = assignement.eval(env);
             Val value = env.getVal(id);
             return env.assign(id, evalResult.sum(value));
+        } else if (operator == Token.TYPE.MINUS) {
+            Val evalResult = assignement.eval(env);
+            Val value = env.getVal(id);
+            return env.assign(id, evalResult.checkNum().subtract(value.checkNum()));
+        } else if (operator == Token.TYPE.ABSTERISC) {
+            Val evalResult = assignement.eval(env);
+            Val value = env.getVal(id);
+            return env.assign(id, evalResult.checkNum().times(value.checkNum()));
+        } else if (operator == Token.TYPE.DIVIDE) {
+            Val evalResult = assignement.eval(env);
+            Val value = env.getVal(id);
+            return env.assign(id, evalResult.checkNum().subtract(value.checkNum()));
         }
         throw new InterpreterException("EQUAL TYPE NOT DEFINED");
     }
