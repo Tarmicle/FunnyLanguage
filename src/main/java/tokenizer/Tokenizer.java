@@ -126,6 +126,7 @@ public class Tokenizer {
         if (nextChar == '<') return handleMinor();
         if (nextChar == '>') return handleMajor();
         if (nextChar == '&') return handleAnd();
+        if (nextChar == '|') return handleOr();
 
         if (isANumber(nextChar)) return handleNumber(nextChar);
         if (identifierLen(nextChar) != 0) return handleIdentifier(identifierLen(nextChar), nextChar);
@@ -139,6 +140,13 @@ public class Tokenizer {
         int b1 = bufferedReader.read();
         if (b1 == '&')
             return new Token(Token.TYPE.LOGICAL_AND, "&&");
+        else throw new TokenizerException();
+    }
+
+    private Token handleOr() throws IOException, TokenizerException {
+        int b1 = bufferedReader.read();
+        if (b1 == '|')
+            return new Token(Token.TYPE.LOGICAL_OR, "||");
         else throw new TokenizerException();
     }
 

@@ -42,7 +42,7 @@ public class Token {
         CURLY_BRACKET_OPEN,
         UNKNOWN, STRING,
         COMMA, SEMICOLON,
-        LOGICAL_AND,
+        LOGICAL_AND, LOGICAL_OR,
         CURLY_BRACKET_CLOSE,
         ROUND_BRACKET_CLOSE,
         ROUND_BRACKET_OPEN,
@@ -54,6 +54,5 @@ public class Token {
         DIVIDE, DIVIDE_EQUAL,
         MINOR, MINOR_EQUAL,
         MAJOR, MAJOR_EQUAL;
-
     }
 }

@@ -161,7 +161,15 @@ public class Parser {
     // logicalOr ::= logicalAnd ( "||" logicalOr )? .
     // TODO
     private Expr logicalOr(Scope scope) throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
-        return logicalAnd(scope);
+        Expr left = logicalAnd(scope);
+        Token.TYPE type = token.type;
+        if (type == Token.TYPE.LOGICAL_OR) {
+            do {
+                token = tokenizer.nextToken();
+                return new OrExpr(left, logicalOr(scope));
+            } while ((type = token.type) == Token.TYPE.LOGICAL_OR);
+        }
+        return left;
     }
 
     // logicalAnd ::= equality ( "&&" logicalAnd )? .
