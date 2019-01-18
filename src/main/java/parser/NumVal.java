@@ -23,6 +23,11 @@ public class NumVal extends Val {
         }
     }
 
+    @Override
+    boolean isNan(){
+        return false;
+    }
+
     NumVal times(Val arg) {
         //return new NumVal(num.multiply(arg.checkNum().num))
         return null;

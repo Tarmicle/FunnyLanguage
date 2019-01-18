@@ -1,5 +1,5 @@
 package parser;
-
+// Assegnamenti, logica and e or e not
 public class Env {
 
     private final Frame frame;

@@ -20,6 +20,8 @@ public class Tokenizer {
     private boolean hasPrevious;
     private boolean readPrevious;
 
+    private List<Token> tokenTrace = new ArrayList<>();
+
     public Tokenizer(String fileName) throws FileNotFoundException {
         hasPrevious = false;
         bufferedReader = new BufferedReader(new FileReader(fileName));
@@ -65,12 +67,18 @@ public class Tokenizer {
             readPrevious = false;
             return previous;
         }
-
         previous = privateNextToken();
+
+        // Debug
+        tokenTrace.add(previous);
+
         hasPrevious = true;
-        System.out.println( previous.getStringVal()+ "\t" +previous.getType().toString() );
         // Solo per debug, vedo a che punto del codice è arrivato il tokenizer
         return previous;
+    }
+
+    public void printTokenTrace() {
+        tokenTrace.forEach(e -> System.out.println(e));
     }
 
     // This method will do 2 next in total
@@ -117,6 +125,7 @@ public class Tokenizer {
         if (nextChar == '-') return handleMinus();
         if (nextChar == '<') return handleMinor();
         if (nextChar == '>') return handleMajor();
+        if (nextChar == '&') return handleAnd();
 
         if (isANumber(nextChar)) return handleNumber(nextChar);
         if (identifierLen(nextChar) != 0) return handleIdentifier(identifierLen(nextChar), nextChar);
@@ -124,6 +133,13 @@ public class Tokenizer {
         if (Character.isJavaIdentifierStart(nextChar)) return handleVar(nextChar);
         return new Token(Token.TYPE.UNKNOWN, Character.toString(((char) nextChar)));
 
+    }
+
+    private Token handleAnd() throws IOException, TokenizerException {
+        int b1 = bufferedReader.read();
+        if (b1 == '&')
+            return new Token(Token.TYPE.LOGICAL_AND, "&&");
+        else throw new TokenizerException();
     }
 
     private int skipLine(BufferedReader bufferedReader) throws IOException {
@@ -438,4 +454,12 @@ public class Tokenizer {
         return new Token(Token.TYPE.NUMBER, new BigDecimal(stringBuilder.toString()));
     }
 
+    public void generateTest() {
+        System.out.println("mockTocken = new ArrayList<>();");
+        for (Token token : tokenTrace) {
+            System.out.println("mockTocken.add(new Token(Token.TYPE." + token.type.toString() + ", "
+                    + (token.getType() == Token.TYPE.NUMBER ? "new BigDecimal(\"" + token.getBigDecimalVal() + "\")" : ("\"" + token.getStringVal()) + "\"") +
+                    "));");
+        }
+    }
 }

@@ -9,6 +9,10 @@ public abstract class Val extends Expr {
         return this;
     }
 
+    boolean isNan(){
+        return true;
+    }
+
     NumVal checkNum() throws InterpreterException {
         throw new InterpreterException("Not a number");
     }

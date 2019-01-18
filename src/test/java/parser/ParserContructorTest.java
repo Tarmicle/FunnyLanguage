@@ -3,10 +3,7 @@ package parser;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import tokenizer.Token;
 import tokenizer.Tokenizer;
-import tokenizer.exceptions.CommentNotClosedException;
-import tokenizer.exceptions.StringNotClosedException;
 import tokenizer.exceptions.TokenizerException;
 import tokenizer.exceptions.UnaspectedTokenException;
 
@@ -15,7 +12,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 
@@ -215,7 +211,7 @@ public class ParserContructorTest {
         Expr expr = new Parser(mockTokenizer).compile();
         assertEquals(InvokeExpr.class, expr.getClass());
         expr.eval(null);
-        assertEquals("a", outContent.toString());
+        assertEquals("@ClosureVal a", outContent.toString());
 
     }
     @Test
@@ -230,6 +226,32 @@ public class ParserContructorTest {
         assertEquals(InvokeExpr.class, expr.getClass());
         expr.eval(null);
         assertEquals("0.47", outContent.toString());
+    }
+    @Test
+    void fakeIfWhileTest() throws TokenizerException, IOException, UnaspectedTokenException, UnexpectedSymbolException, InterpreterException {
+        answers = new MockTokenizer(Code.FAKE_IF_TRUE_WHILE);
+        when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
+        when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
+        doAnswer(answers.provide_undoNext_Answer()).when(mockTokenizer).undoNext();
+
+
+        Expr expr = new Parser(mockTokenizer).compile();
+        assertEquals(InvokeExpr.class, expr.getClass());
+        expr.eval(null);
+        assertEquals("False", outContent.toString());
+    }
+    @Test
+    void fiboIter() throws TokenizerException, IOException, UnaspectedTokenException, UnexpectedSymbolException, InterpreterException {
+        answers = new MockTokenizer(Code.TEST_FIBONACCI_ITER);
+        when(mockTokenizer.assertAndNext(isA(String.class))).thenAnswer(answers.provide_assertAndNext_Answer());
+        when(mockTokenizer.nextToken()).thenAnswer(answers.provide_next_Answer());
+        doAnswer(answers.provide_undoNext_Answer()).when(mockTokenizer).undoNext();
+
+
+        Expr expr = new Parser(mockTokenizer).compile();
+        assertEquals(InvokeExpr.class, expr.getClass());
+        expr.eval(null);
+        assertEquals("13", outContent.toString());
     }
 
   /*  @Test

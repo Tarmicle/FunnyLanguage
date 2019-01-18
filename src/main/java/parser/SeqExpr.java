@@ -9,7 +9,7 @@ public class SeqExpr extends Expr {
     SeqExpr() {
         exprList = new ArrayList<>();
     }
-
+    // args ::= "(" ( sequence ( "," sequence )* )? ")"
     @Override
     public Val eval(Env env) throws InterpreterException {
         Val lastValue = null;

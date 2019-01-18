@@ -47,7 +47,7 @@
 
 
 
-
+/*
 {coin change ->
     coin = {(index) ->
         if index == 0
@@ -86,7 +86,7 @@
     println(change(50, 0))
 }
 
-
+*/
 
 
 /*{makeCounter myCounter yourCounter n ->

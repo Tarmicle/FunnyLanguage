@@ -21,6 +21,8 @@ public class BinaryExpr extends Expr {
 
         switch (operator) {
             case PLUS:
+                if (leftExpr.eval(env).isNan())
+                    return new StringVal(leftExpr.eval(env).toString() + rightExpr.eval(env).toString());
                 return leftExpr.eval(env).sum(rightExpr.eval(env));
             case MINUS:
                 leftDecimal = leftExpr.eval(env).checkNum().getBigDecimal();
@@ -37,7 +39,7 @@ public class BinaryExpr extends Expr {
                     BigDecimal divisionResult = new BigDecimal(leftDecimal.divide(rightDecimal).intValue());
                     return new NumVal(leftDecimal.subtract(divisionResult.multiply(rightDecimal)));
                 } catch (ArithmeticException e) {
-                    BigDecimal divisionResult = new BigDecimal(leftDecimal.divide(rightDecimal,SCALE, RoundingMode.HALF_DOWN).intValue());
+                    BigDecimal divisionResult = new BigDecimal(leftDecimal.divide(rightDecimal, SCALE, RoundingMode.HALF_DOWN).intValue());
                     return new NumVal(leftDecimal.subtract(divisionResult.multiply(rightDecimal)));
                 }
             case DIVIDE:

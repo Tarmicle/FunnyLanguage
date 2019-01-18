@@ -32,6 +32,7 @@ public class Token {
     }
 
     public enum TYPE {
+        NIL,
         IFNOT, IF, THEN, ELSE, FI,
         WHILENOT, WHILE, DO, OD,
         PRINTLN, PRINT, TRUE, FALSE,
@@ -41,6 +42,7 @@ public class Token {
         CURLY_BRACKET_OPEN,
         UNKNOWN, STRING,
         COMMA, SEMICOLON,
+        LOGICAL_AND,
         CURLY_BRACKET_CLOSE,
         ROUND_BRACKET_CLOSE,
         ROUND_BRACKET_OPEN,

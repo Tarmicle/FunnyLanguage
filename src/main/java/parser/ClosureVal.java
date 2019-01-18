@@ -29,8 +29,21 @@ public class ClosureVal extends Val {
         if (argVals == null) newFrame = new Frame(funExpr.params(), funExpr.locals(), new ArrayList<>());
         else newFrame = new Frame(funExpr.params(), funExpr.locals(), argVals);
         Env environment = new Env(newFrame, env);
-        return funExpr.code().eval(environment);
+        Expr code = funExpr.code();
+        try {
+            return code.eval(environment);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            throw new InterpreterException();
+        }
         //return funExpr.code().eval(new Env(new Frame(funExpr.params(), funExpr.locals(), argVals), env));
+    }
+
+    @Override
+    public String toString() {
+        // È più semplice da testare
+        return "@ClosureVal";
     }
 }
 

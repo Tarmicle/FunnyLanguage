@@ -23,7 +23,6 @@ public class UnaryExpr extends Expr {
             default:
                 // Not supported JET
                 throw new InterpreterException();
-
         }
     }
 

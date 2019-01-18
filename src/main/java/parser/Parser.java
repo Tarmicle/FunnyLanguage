@@ -345,7 +345,7 @@ public class Parser {
         if (token.getType() == Token.TYPE.WHILE || token.getType() == Token.TYPE.WHILENOT) {
             boolean negate = false;
             if (token.getType() == Token.TYPE.WHILENOT) negate = true;
-            
+
             token = tokenizer.nextToken();
 
             Expr condition = sequence(scope);
