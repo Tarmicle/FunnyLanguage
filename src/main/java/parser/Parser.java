@@ -19,12 +19,23 @@ public class Parser {
     }
 
     public Expr compile() throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
-        Expr programm = program();
-        if (token.type != Token.TYPE.EOS) {
-            System.out.println("Compiler error, ");
-            System.out.println("TOKEN: " + token.type);
+        try {
+            Expr programm = program();
+            if (token.type != Token.TYPE.EOS) {
+                System.out.println("Compiler error, ");
+                System.out.println("TOKEN: " + token.type);
+            }
+            return programm;
+        } catch (Exception e) {
+            tokenizer.printTokenTrace();
+            return null;
         }
-        return programm;
+    }
+
+    public void genTest() throws IOException, TokenizerException {
+        while (tokenizer.nextToken().type != Token.TYPE.EOS) {
+        }
+        tokenizer.generateTest();
     }
 
     public Expr program() throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
@@ -47,7 +58,7 @@ public class Parser {
         FunExpr funExpr = new FunExpr(params, locals, optSequence(new Scope(temps, scope)));
 
         if (token.getType() != Token.TYPE.CURLY_BRACKET_CLOSE)
-            throw new UnaspectedTokenException(Token.TYPE.CURLY_BRACKET_OPEN.toString(), token.getType().toString());
+            throw new UnaspectedTokenException(Token.TYPE.CURLY_BRACKET_CLOSE.toString(), token.getType().toString());
         else token = tokenizer.nextToken();
 
         return funExpr;
@@ -75,10 +86,12 @@ public class Parser {
 
     // optSequence ::= ( "->" sequence )? .
     private Expr optSequence(Scope scope) throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
+
         if (token.type == Token.TYPE.LAMBDA) {
             token = tokenizer.nextToken();
             return sequence(scope);
-        } else throw new UnaspectedTokenException("->", token.getType().toString());
+        } else if (token.type == Token.TYPE.CURLY_BRACKET_CLOSE) return null;
+        else throw new UnaspectedTokenException("->", token.getType().toString());
     }
 
     // sequence ::= optAssignment ( ";" optAssignment )* .
@@ -102,7 +115,7 @@ public class Parser {
         // IO ho accesso ad un assignement
         // Id plus minus not num false true nil string openbrace openparent if ifnot while whilenot print println
 
-        if (token.getType()== Token.TYPE.CURLY_BRACKET_CLOSE){
+        if (token.getType() == Token.TYPE.CURLY_BRACKET_CLOSE) {
             return null;
         }
         return assignement(scope);
@@ -130,7 +143,12 @@ public class Parser {
                     token = tokenizer.nextToken();
                     if (!scope.isInScope(tokenbk.getStringVal()))
                         throw new UnexpectedSymbolException("Unexpected symbol " + token.getStringVal());
-                    return new SetVarExpr(tokenbk.getStringVal(), assignement(scope));
+                    return new SetVarExpr(tokenbk.getStringVal(), assignement(scope), Token.TYPE.EQUAL);
+                case PLUS_EQUAL:
+                    token = tokenizer.nextToken();
+                    if (!scope.isInScope(tokenbk.getStringVal()))
+                        throw new UnexpectedSymbolException("Unexpected symbol " + token.getStringVal());
+                    return new SetVarExpr(tokenbk.getStringVal(), assignement(scope), Token.TYPE.PLUS);
                 default:
                     tokenizer.undoNext();
                     token = tokenbk;
@@ -141,15 +159,22 @@ public class Parser {
     }
 
     // logicalOr ::= logicalAnd ( "||" logicalOr )? .
+    // TODO
     private Expr logicalOr(Scope scope) throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
-
         return logicalAnd(scope);
     }
 
     // logicalAnd ::= equality ( "&&" logicalAnd )? .
     private Expr logicalAnd(Scope scope) throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
-
-        return equality(scope);
+        Expr left = equality(scope);
+        Token.TYPE type = token.type;
+        if (type == Token.TYPE.LOGICAL_AND) {
+            do {
+                token = tokenizer.nextToken();
+                return new AndExpr(left, logicalAnd(scope));
+            } while ((type = token.type) == Token.TYPE.LOGICAL_AND);
+        }
+        return left;
     }
 
     // equality ::= comparison ( ( "==" | "!=" ) comparison )? .
@@ -187,16 +212,20 @@ public class Parser {
     private Expr add(Scope scope) throws IOException, UnaspectedTokenException, TokenizerException, UnexpectedSymbolException {
         Expr expr = mult(scope);
         Token.TYPE type = token.type;
-        switch (type) {
-            case PLUS:
-                token = tokenizer.nextToken();
-                expr = new BinaryExpr(expr, mult(scope), type);
-                break;
-            case MINUS:
-                token = tokenizer.nextToken();
-                expr = new BinaryExpr(expr, mult(scope), type);
-                break;
-        }
+        if (type == Token.TYPE.PLUS || type == Token.TYPE.MINUS)
+            do {
+                switch (type) {
+                    case PLUS:
+                        token = tokenizer.nextToken();
+                        expr = new BinaryExpr(expr, mult(scope), type);
+                        break;
+                    case MINUS:
+                        token = tokenizer.nextToken();
+                        expr = new BinaryExpr(expr, mult(scope), type);
+                        break;
+
+                }
+            } while ((type = token.type) == Token.TYPE.PLUS || type == Token.TYPE.MINUS);
         return expr;
     }
 
@@ -205,7 +234,7 @@ public class Parser {
         Expr expr = unary(scope);
         Token bkToken = token;
 
-        while (bkToken.getType() == Token.TYPE.ABSTERISC || bkToken.getType() == Token.TYPE.DIVIDE|| bkToken.getType() == Token.TYPE.PERCENT) {
+        while (bkToken.getType() == Token.TYPE.ABSTERISC || bkToken.getType() == Token.TYPE.DIVIDE || bkToken.getType() == Token.TYPE.PERCENT) {
             token = tokenizer.nextToken();
             expr = new BinaryExpr(expr, unary(scope), bkToken.getType());
             bkToken = token;
@@ -254,6 +283,8 @@ public class Parser {
                 return bool(scope);
             case FALSE:
                 return bool(scope);
+            case NIL:
+                return nil(scope);
             case VARIABLE:
                 return getId(scope);
             case CURLY_BRACKET_OPEN:
@@ -264,6 +295,8 @@ public class Parser {
                 return cond(scope);
             case WHILE:
                 return loop(scope);
+            case WHILENOT:
+                return loop(scope);
             case PRINT:
                 return print(scope);
             case PRINTLN:
@@ -272,6 +305,11 @@ public class Parser {
                 throw new UnaspectedTokenException("PRIMARY", token.getType().toString());
         }
 
+    }
+
+    private Expr nil(Scope scope) throws IOException, TokenizerException {
+        token = tokenizer.nextToken();
+        return NilVal.instance();
     }
 
     private Expr subsequence(Scope scope) throws IOException, TokenizerException, UnaspectedTokenException, UnexpectedSymbolException {
@@ -305,6 +343,9 @@ public class Parser {
 
     private Expr loop(Scope scope) throws UnexpectedSymbolException, TokenizerException, UnaspectedTokenException, IOException {
         if (token.getType() == Token.TYPE.WHILE || token.getType() == Token.TYPE.WHILENOT) {
+            boolean negate = false;
+            if (token.getType() == Token.TYPE.WHILENOT) negate = true;
+            
             token = tokenizer.nextToken();
 
             Expr condition = sequence(scope);
@@ -317,15 +358,14 @@ public class Parser {
             if (token.getType() != Token.TYPE.OD) throw new UnexpectedSymbolException(token.type.toString());
             token = tokenizer.nextToken();
 
-            return new WhileExpr(condition, thenDo);
+            return new WhileExpr(condition, thenDo, negate);
         } else throw new UnexpectedSymbolException("WHILENOT EXPECTED");
     }
 
     private Expr getId(Scope scope) throws TokenizerException, IOException, UnexpectedSymbolException {
         //TODO: Controllare se esiste nello scope
         if (!scope.isInScope(token.getStringVal())) {
-            System.out.println("Unexpected symbol" + token.getStringVal());
-            throw new UnexpectedSymbolException("Unexpected symbol " + token.getStringVal());
+            throw new UnexpectedSymbolException("[COMPILER] Unexpected symbol " + token.getStringVal());
         }
         Expr getVarExpr = new GetVarExpr(token.value);
         token = tokenizer.nextToken();
